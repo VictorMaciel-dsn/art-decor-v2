@@ -1,33 +1,50 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Award, MapPin, Truck, Sparkles } from "lucide-react";
+import GlowingCard from "./GlowingCard";
 
 const benefits = [
   {
     icon: Award,
     title: "Qualidade Premium",
-    description:
-      "Materiais de primeira linha e acabamento impecável em cada peça.",
+    description: "Materiais de primeira linha em cada peça.",
   },
   {
     icon: Sparkles,
     title: "Orçamento Gratuito",
-    description:
-      "Avaliação personalizada sem compromisso para seu projeto.",
+    description: "Avaliação personalizada sem compromisso.",
   },
   {
     icon: Truck,
     title: "Instalação Profissional",
-    description:
-      "Equipe especializada para instalação perfeita e segura.",
+    description: "Equipe especializada para instalação perfeita.",
   },
   {
     icon: MapPin,
     title: "Atendimento Regional",
-    description:
-      "Cobrimos Teresópolis e toda a região serrana do Rio de Janeiro.",
+    description: "Teresópolis e toda a região serrana.",
   },
 ];
+
+const FloatingIcon = ({ icon: Icon, delay }: { icon: typeof Award; delay: number }) => {
+  return (
+    <motion.div
+      className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-2xl bg-primary/10 flex items-center justify-center"
+      animate={{
+        y: [0, -6, 0],
+        rotate: [0, 3, -3, 0],
+      }}
+      transition={{
+        duration: 4,
+        repeat: Infinity,
+        delay,
+        ease: "easeInOut",
+      }}
+    >
+      <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
+    </motion.div>
+  );
+};
 
 const BenefitCard = ({
   benefit,
@@ -44,64 +61,59 @@ const BenefitCard = ({
       ref={ref}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group"
+      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+      className="group h-full"
     >
-      <motion.div
-        className="glass-card p-8 rounded-2xl h-full text-center"
-        whileHover={{ y: -8, scale: 1.02 }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* Icon */}
+      <GlowingCard className="h-full rounded-2xl">
         <motion.div
-          className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center"
-          whileHover={{ rotate: 5, scale: 1.1 }}
+          className="glass-card p-6 md:p-8 rounded-2xl h-full text-center"
+          whileHover={{ y: -5, scale: 1.02 }}
           transition={{ duration: 0.3 }}
         >
-          <benefit.icon className="w-8 h-8 text-primary" />
-        </motion.div>
+          {/* Floating Icon */}
+          <FloatingIcon icon={benefit.icon} delay={index * 0.5} />
 
-        {/* Content */}
-        <h3 className="text-xl font-serif font-medium text-foreground mb-3">
-          {benefit.title}
-        </h3>
-        <p className="text-muted-foreground leading-relaxed">
-          {benefit.description}
-        </p>
-      </motion.div>
+          {/* Content */}
+          <h3 className="text-lg md:text-xl font-serif font-medium text-foreground mb-2 md:mb-3">
+            {benefit.title}
+          </h3>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            {benefit.description}
+          </p>
+        </motion.div>
+      </GlowingCard>
     </motion.div>
   );
 };
 
 const Benefits = () => {
   const headerRef = useRef(null);
-  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-50px" });
 
   return (
-    <section className="section-padding bg-muted/30">
-      <div className="container mx-auto">
+    <section id="contato" className="section-padding bg-muted/30">
+      <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
         <motion.div
           ref={headerRef}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center mb-10 md:mb-16"
         >
-          <span className="text-sm font-medium text-primary tracking-widest uppercase mb-4 block">
+          <span className="text-xs md:text-sm font-medium text-primary tracking-widest uppercase mb-3 block">
             Por Que Nos Escolher
           </span>
-          <h2 className="section-title text-center mx-auto">
+          <h2 className="section-title text-center mx-auto text-2xl md:text-4xl lg:text-5xl">
             Vamos Até a Sua Casa
           </h2>
-          <p className="section-subtitle text-center mx-auto mt-4">
-            Oferecemos uma experiência completa e personalizada, do orçamento à
-            instalação final.
+          <p className="section-subtitle text-center mx-auto mt-3 text-sm md:text-lg max-w-xl">
+            Experiência completa do orçamento à instalação.
           </p>
         </motion.div>
 
         {/* Benefits Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {benefits.map((benefit, index) => (
             <BenefitCard key={benefit.title} benefit={benefit} index={index} />
           ))}
