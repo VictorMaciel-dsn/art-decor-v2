@@ -28,16 +28,16 @@ const Header = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "glass-card py-4"
-          : "bg-transparent py-6"
+          ? "glass-card py-3 md:py-4"
+          : "bg-transparent py-4 md:py-6"
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-12">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <motion.a
             href="#home"
-            className="text-2xl font-serif font-semibold text-foreground"
+            className="text-xl md:text-2xl font-serif font-semibold text-foreground"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -45,12 +45,12 @@ const Header = () => {
           </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-8 lg:gap-10">
             {navLinks.map((link, index) => (
               <motion.a
                 key={link.label}
                 href={link.href}
-                className="relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-300"
+                className="relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index, duration: 0.4 }}
@@ -58,9 +58,11 @@ const Header = () => {
               >
                 {link.label}
                 <motion.span
-                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary"
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
+                  className="absolute -bottom-1 left-0 h-0.5 bg-primary origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  style={{ width: "100%" }}
                 />
               </motion.a>
             ))}
@@ -95,35 +97,43 @@ const Header = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden mt-4 pb-4 overflow-hidden"
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="md:hidden mt-4 pb-6 overflow-hidden"
             >
-              <div className="flex flex-col gap-4">
-                {navLinks.map((link, index) => (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="glass-card rounded-2xl p-6"
+              >
+                <div className="flex flex-col gap-4">
+                  {navLinks.map((link, index) => (
+                    <motion.a
+                      key={link.label}
+                      href={link.href}
+                      className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors py-2 px-4 rounded-xl hover:bg-primary/10"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * index }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.label}
+                    </motion.a>
+                  ))}
                   <motion.a
-                    key={link.label}
-                    href={link.href}
-                    className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors"
+                    href="https://wa.me/5521983216443"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary text-center mt-2"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * index }}
+                    transition={{ delay: 0.2 }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    {link.label}
+                    Solicitar Orçamento
                   </motion.a>
-                ))}
-                <motion.a
-                  href="https://wa.me/5521983216443"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary text-center mt-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Solicitar Orçamento
-                </motion.a>
-              </div>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
