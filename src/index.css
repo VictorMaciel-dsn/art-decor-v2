@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
+/* Registered so it interpolates as a number: an unregistered custom
+   property animates as a string and jumps between keyframes. Drives the
+   numerals in Benefits, which fill with gold as their column scrolls in. */
+@property --numeral-lit {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -186,6 +195,25 @@
     letter-spacing: -0.02em;
   }
 
+  /* SplitText(mask: "lines") wraps every line in a div with
+     `overflow: clip`, sized to the line box. These headings run a
+     line-height below 1, so that box is SHORTER than the glyphs and cuts
+     descenders — the tail of the "g" in "entregues" gets sliced off.
+
+     The padding gives the mask the missing room and the equal negative
+     margin takes it straight back out of the layout, so line spacing is
+     untouched. Both the mask and the line inside it need it: the mask is
+     what clips, the line is what is measured.
+
+     The wrappers carry no class of their own (SplitText only derives one
+     when the source line already has one), so they are matched
+     structurally. */
+  .display div,
+  .headline div {
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
+  }
+
   .lede {
     @apply text-base leading-relaxed text-muted-foreground sm:text-lg;
   }
@@ -212,6 +240,25 @@
   /* Same foil, but it drifts — for the hero and the wordmark */
   .gold-text-sheen {
     animation: gold-drift 7s ease-in-out infinite alternate;
+  }
+
+  /* The wordmark: same foil, but the ramp never drops to the deep stops and
+     a warm halo lifts it off the dark header — it has to be the brightest
+     thing up there, not a muted sibling of the headline gold. */
+  .gold-text-bright {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--gold-light)) 0%,
+      hsl(var(--gold-pale)) 22%,
+      hsl(0 0% 100% / 0.95) 32%,
+      hsl(var(--gold-pale)) 42%,
+      hsl(var(--gold-light)) 58%,
+      hsl(var(--gold)) 72%,
+      hsl(var(--gold-light)) 86%,
+      hsl(var(--gold-pale)) 100%
+    );
+    filter: drop-shadow(0 0 10px hsl(var(--gold) / 0.35))
+      drop-shadow(0 1px 0 hsl(var(--gold-deep) / 0.6));
   }
 
   /* Small type can't carry the full ramp — its dark stops read as holes.
@@ -281,6 +328,22 @@
     border-radius: var(--radius-btn);
     isolation: isolate;
     white-space: nowrap;
+  }
+
+  /* Phones get a tighter pill. The desktop padding was sized against a
+     wide hero; at 390px the same button eats most of the column and reads
+     as oversized next to the body copy. */
+  @media (max-width: 767px) {
+    .btn-solid,
+    .btn-outline {
+      @apply gap-1.5 px-5 py-3;
+      @apply text-[0.75rem] tracking-[0.1em];
+    }
+
+    .btn-solid svg,
+    .btn-outline svg {
+      @apply h-3 w-3;
+    }
   }
 
   /* The label never moves on hover — only the surface under it changes.
@@ -360,6 +423,40 @@
 
   .btn-outline:hover::before {
     @apply opacity-100;
+  }
+
+  /* ── Spark ring ─────────────────────────────────────────────────
+     The travelling gold spark (SparkRing.tsx) is a canvas sitting behind
+     the button's own surface. The button clips its contents for the hover
+     fill, so a button that carries the spark has to let the glow out —
+     hence the variant class rather than a change to .btn-solid itself. */
+  .btn-spark {
+    overflow: visible;
+  }
+
+  /* The outline variant is translucent glass. Over a photo that is the
+     point, but with the spark behind it the backdrop blur smears the
+     canvas into a haze — so a sparked outline keeps the tint and drops
+     the blur. */
+  .btn-outline.btn-spark {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: hsl(var(--ink) / 0.6);
+  }
+
+  /* Sized in px by the JS (button + the glow's margin). Sits behind the
+     outline variant's hover fill, which is itself at -z-10, so the spark
+     never draws over the surface it is meant to be orbiting. */
+  .spark-ring {
+    @apply pointer-events-none absolute left-1/2 top-1/2;
+    z-index: -20;
+    translate: -50% -50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spark-ring {
+      display: none;
+    }
   }
 
   /* ── Dark glass ─────────────────────────────────────────────────
@@ -523,14 +620,35 @@
 
   /* Big outlined numeral. Transparent fill with a gold stroke, so it reads
      as a watermark rather than a heading. */
+  /* Outlined by default and filled with gold as --numeral-lit is scrubbed
+     from 0 to 1 by the scroll (Benefits.tsx). The stroke brightens over the
+     same range, so the digit gains weight rather than just opacity.
+
+     opacity stays off this: the hover rule below uses it, and a scrubbed
+     opacity would fight it on a desktop pointer. */
   .numeral {
     font-family: 'Cormorant Garamond', Georgia, serif;
     @apply block leading-none;
     font-size: clamp(3.75rem, 5.6vw, 5.25rem);
-    color: transparent;
-    -webkit-text-stroke: 1px hsl(var(--gold) / 0.45);
-    opacity: 0.4;
-    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    /* --numeral-lit is scrubbed by the scroll; --numeral-hover is set by
+       the pointer. max() takes whichever is brighter, so hovering a column
+       that has not finished lighting still fills it. */
+    --numeral-hover: 0;
+    --lit: max(var(--numeral-lit), var(--numeral-hover));
+    color: hsl(var(--gold) / calc(var(--lit) * 0.9));
+    -webkit-text-stroke: 1px hsl(var(--gold) / calc(0.45 + var(--lit) * 0.45));
+    opacity: calc(0.4 + var(--lit) * 0.55);
+    transition:
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* No scroll scrub under reduced motion, so the numerals would be stuck
+     at their unlit initial value — they are simply shown lit instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .numeral {
+      --numeral-lit: 1;
+    }
   }
 
   .benefit-col .benefit-icon {
@@ -560,8 +678,12 @@
       @apply scale-x-100;
     }
 
+    /* Hover uses a second variable rather than --numeral-lit: GSAP writes
+       that one as an inline style while scrubbing, and an inline value
+       beats any rule here, so hover would silently do nothing. The two are
+       combined in .numeral below, where the larger of the pair wins. */
     .benefit-col:hover .numeral {
-      opacity: 0.95;
+      --numeral-hover: 1;
     }
 
     .benefit-col:hover .benefit-icon {
@@ -609,11 +731,13 @@
     background-color: hsl(var(--ink-raised));
   }
 
-  .zoom-frame img {
+  .zoom-frame img,
+  .zoom-frame video {
     transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .zoom-frame:hover img {
+  .zoom-frame:hover img,
+  .zoom-frame:hover video {
     transform: scale(1.04);
   }
 

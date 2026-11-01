@@ -4,6 +4,9 @@ import SplitReveal from "./SplitReveal";
 import Button from "./Button";
 import ctaImage from "@/assets/img/cortina_pregaMacho2.png?hq";
 import ctaImageUrl from "@/assets/img/cortina_pregaMacho2.png?hq&as=url";
+// Portrait composition for phones, where the 2.18:1 wide shot would be
+// cropped to a sliver of its centre.
+import ctaMobile from "@/assets/img/cortina_pregaMacho2-mobile.png?hq";
 
 const WHATSAPP = "https://wa.me/5521983216443";
 
@@ -53,18 +56,25 @@ const CTA = () => {
   <section ref={root} className="relative overflow-hidden">
     {/* Oversized so the drift never exposes an edge. */}
     <div className="absolute inset-0 -top-[8%] h-[116%]">
-      <img
-        ref={image}
-        src={ctaImageUrl}
-        srcSet={ctaImage}
-        sizes="100vw"
-        loading="lazy"
-        decoding="async"
-        width={1850}
-        height={850}
-        alt="Cortina de voil do piso ao teto em sala com vista para o mar"
-        className="photo-warm h-full w-full object-cover"
-      />
+      <picture className="block h-full w-full">
+        <source
+          media="(max-width: 767px)"
+          srcSet={ctaMobile}
+          sizes="100vw"
+        />
+        <img
+          ref={image}
+          src={ctaImageUrl}
+          srcSet={ctaImage}
+          sizes="100vw"
+          loading="lazy"
+          decoding="async"
+          width={1850}
+          height={850}
+          alt="Cortina de voil do piso ao teto em sala com vista para o mar"
+          className="photo-warm h-full w-full object-cover"
+        />
+      </picture>
     </div>
     <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,hsl(var(--ink)/0.97)_0%,hsl(var(--ink)/0.93)_34%,hsl(var(--ink)/0.78)_64%,hsl(var(--ink)/0.62)_100%)]" />
     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_62%_45%,transparent_10%,hsl(var(--ink)/0.55)_66%,hsl(var(--ink)/0.9)_100%)]" />
@@ -92,7 +102,7 @@ const CTA = () => {
       </p>
 
       <div data-cta-fade className="mt-11">
-        <Button href={WHATSAPP} external>
+        <Button href={WHATSAPP} spark external>
           Solicitar orçamento
         </Button>
       </div>

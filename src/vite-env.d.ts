@@ -12,6 +12,12 @@ declare module "*?hq&as=url" {
   export default src;
 }
 
+// Any hand-tuned directive chain ending in `as=url` is a single URL too.
+declare module "*&as=url" {
+  const src: string;
+  export default src;
+}
+
 // `?meta` yields the source's intrinsic dimensions, so a layout can follow the
 // photo's real shape instead of a hard-coded aspect ratio.
 declare module "*?meta" {

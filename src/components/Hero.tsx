@@ -7,6 +7,11 @@ import { playsIntro } from "@/lib/intro";
 import { scrollToAnchor } from "@/hooks/useLenis";
 import heroImage from "@/assets/img/tela_capa.png?hq";
 import heroImageUrl from "@/assets/img/tela_capa.png?hq&as=url";
+// A portrait crop for phones. The wide shot is 2.16:1, so filling a tall
+// phone screen with it meant cropping away most of the frame; this one is
+// composed for the format. <picture> picks one or the other, so only the
+// matching file is ever downloaded.
+import heroMobile from "@/assets/img/tela_mobile.png?hq";
 
 const WHATSAPP = "https://wa.me/5521983216443";
 
@@ -87,18 +92,29 @@ const Hero = () => {
       >
         {/* Oversized so the parallax drift never exposes an edge. */}
         <div className="absolute inset-0 -top-[10%] h-[120%]">
-          <img
-            ref={image}
-            src={heroImageUrl}
-            srcSet={heroImage}
-            sizes="100vw"
-            // This React version passes through only the lowercase spelling.
-            {...{ fetchpriority: "high" }}
-            width={1672}
-            height={941}
-            alt="Living integrado com cortinas do piso ao teto sob luz quente"
-            className="h-full w-full object-cover"
-          />
+          {/* <picture> is an inline box by default; it has to fill the
+              sized wrapper or the img's h-full resolves against nothing. */}
+          <picture className="block h-full w-full">
+            {/* Phones get the portrait crop. The breakpoint matches the
+                layout's own: above it the wide shot has room to read. */}
+            <source
+              media="(max-width: 767px)"
+              srcSet={heroMobile}
+              sizes="100vw"
+            />
+            <img
+              ref={image}
+              src={heroImageUrl}
+              srcSet={heroImage}
+              sizes="100vw"
+              // This React version passes through only the lowercase spelling.
+              {...{ fetchpriority: "high" }}
+              width={1672}
+              height={941}
+              alt="Fachada iluminada à noite com cortinas do piso ao teto"
+              className="h-full w-full object-cover"
+            />
+          </picture>
         </div>
 
         {/* Light falls on the fabric and the rest goes to black: a hard wash
@@ -122,7 +138,7 @@ const Hero = () => {
               data-hero-eyebrow
               className="mt-7 text-[0.6875rem] font-medium uppercase tracking-[0.3em] text-gold"
             >
-              40 anos de tradição
+              45 anos de tradição
             </p>
 
             <SplitReveal
@@ -155,6 +171,7 @@ const Hero = () => {
             >
               <Button
                 href="#projetos"
+                spark
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToAnchor("#projetos");
@@ -162,7 +179,7 @@ const Hero = () => {
               >
                 Conheça nossos projetos
               </Button>
-              <Button href={WHATSAPP} variant="outline" external arrow={false}>
+              <Button href={WHATSAPP} variant="outline" spark external arrow={false}>
                 Solicitar orçamento
               </Button>
             </div>

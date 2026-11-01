@@ -1,12 +1,34 @@
+import { Link, useLocation } from "react-router-dom";
 import Reveal from "./Reveal";
-// art-decor-seal.png is the original JPEG cropped to its own gold circle with
-// a transparent outside, so the seal sits straight on the footer's ink rather
-// than on a black square that never quite matched it. Resized at build time to
-// the 1x/2x/3x renditions it is actually displayed at.
-import sealSet from "@/assets/logos/art-decor-seal.png?w=192;384;576&format=webp&quality=95&as=srcset";
-import sealUrl from "@/assets/logos/art-decor-seal.png?w=384&format=png&as=url";
+// The seal's small lettering only stays sharp if the browser never resamples
+// it: these are lossless renditions at exactly 1x–4x of the 208/240 CSS px
+// slots, downscaled with Lanczos and lightly unsharp-masked from
+// art-decor-seal.png. Regenerate them if the source changes.
+import seal208 from "@/assets/logos/seal/seal-208.webp";
+import seal240 from "@/assets/logos/seal/seal-240.webp";
+import seal416 from "@/assets/logos/seal/seal-416.webp";
+import seal480 from "@/assets/logos/seal/seal-480.webp";
+import seal624 from "@/assets/logos/seal/seal-624.webp";
+import seal720 from "@/assets/logos/seal/seal-720.webp";
+import seal832 from "@/assets/logos/seal/seal-832.webp";
+import seal960 from "@/assets/logos/seal/seal-960.webp";
+import sealUrl from "@/assets/logos/seal/seal-480.png";
+
+const sealSet = [
+  [seal208, 208],
+  [seal240, 240],
+  [seal416, 416],
+  [seal480, 480],
+  [seal624, 624],
+  [seal720, 720],
+  [seal832, 832],
+  [seal960, 960],
+]
+  .map(([src, w]) => `${src} ${w}w`)
+  .join(", ");
 
 const WHATSAPP = "https://wa.me/5521983216443";
+const INSTAGRAM = "https://instagram.com/artdecorteresopolis";
 const MAPS = "https://maps.google.com/?q=Av.+Lúcio+Meira,+551+-+Várzea,+Teresópolis+-+RJ";
 
 const nav = [
@@ -18,7 +40,11 @@ const nav = [
   { label: "Contato", href: "#contato" },
 ];
 
-const Footer = () => (
+const Footer = () => {
+  const { pathname } = useLocation();
+  const onHome = pathname === "/";
+
+  return (
   <footer id="contato" className="relative scroll-mt-28 bg-ink text-ivory">
     <div className="gold-rule" />
     <div className="shell py-20 md:py-28">
@@ -31,16 +57,16 @@ const Footer = () => (
             <img
               src={sealUrl}
               srcSet={sealSet}
-              sizes="(min-width: 768px) 192px, 160px"
+              sizes="(min-width: 768px) 240px, 208px"
               alt="Art Decor de Teresópolis — cortinas e persianas"
-              width={192}
-              height={192}
+              width={240}
+              height={240}
               loading="lazy"
               decoding="async"
-              className="h-40 w-40 object-contain md:h-48 md:w-48"
+              className="h-52 w-52 object-contain md:h-60 md:w-60"
             />
             <p className="mt-7 max-w-xs text-sm font-light leading-relaxed text-ivory/60">
-              Cortinas, persianas e automação sob medida. 40 anos vestindo
+              Cortinas, persianas e automação sob medida. 45 anos vestindo
               ambientes em Teresópolis e região.
             </p>
           </div>
@@ -50,14 +76,27 @@ const Footer = () => (
               Navegação
             </p>
             <ul className="mt-6 space-y-3">
+              {/* Off the home page these sections are not mounted, so the
+                  bare hash would do nothing — route home carrying the
+                  anchor instead and let Index make the jump. */}
               {nav.map((n) => (
                 <li key={n.href}>
-                  <a
-                    href={n.href}
-                    className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"
-                  >
-                    {n.label}
-                  </a>
+                  {onHome ? (
+                    <a
+                      href={n.href}
+                      className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"
+                    >
+                      {n.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to="/"
+                      state={{ anchor: n.href }}
+                      className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"
+                    >
+                      {n.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -80,20 +119,20 @@ const Footer = () => (
               </li>
               <li>
                 <a
-                  href="mailto:cortinas@gmail.com.br"
+                  href="tel:+552126421389"
                   className="transition-colors duration-300 hover:text-gold"
                 >
-                  cortinas@gmail.com.br
+                  Telefone · (21) 2642-1389
                 </a>
               </li>
               <li>
                 <a
-                  href="https://instagram.com"
+                  href={INSTAGRAM}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors duration-300 hover:text-gold"
                 >
-                  Instagram
+                  Instagram · @artdecorteresopolis
                 </a>
               </li>
               <li className="pt-3">
@@ -119,6 +158,7 @@ const Footer = () => (
       </div>
     </div>
   </footer>
-);
+  );
+};
 
 export default Footer;

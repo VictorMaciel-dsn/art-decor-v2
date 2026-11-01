@@ -1,5 +1,6 @@
-import type { MouseEvent, ReactNode } from "react";
+import type { MouseEvent } from "react";
 import { useMagnetic } from "@/hooks/useMagnetic";
+import SparkRing from "./SparkRing";
 
 /** Written out in full so Tailwind's scanner can see both class names. */
 const VARIANTS = {
@@ -22,6 +23,8 @@ type Props = {
   arrow?: boolean;
   /** Suppresses the magnetic pull where a button sits in tight layout. */
   magnetic?: boolean;
+  /** Adds the travelling gold spark. Reserved for the page's primary CTAs. */
+  spark?: boolean;
   className?: string;
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 };
@@ -38,6 +41,7 @@ const Button = ({
   external = false,
   arrow = true,
   magnetic = true,
+  spark = false,
   className = "",
   onClick,
 }: Props) => {
@@ -51,8 +55,9 @@ const Button = ({
       {...(external
         ? { target: "_blank", rel: "noopener noreferrer" }
         : {})}
-      className={`${VARIANTS[variant]} ${className}`}
+      className={`${VARIANTS[variant]} ${spark ? "btn-spark" : ""} ${className}`}
     >
+      {spark && <SparkRing />}
       <span className="btn-label">{children}</span>
       {arrow && <Arrow />}
     </a>

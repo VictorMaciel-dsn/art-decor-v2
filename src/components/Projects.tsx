@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
 import Img from "./Img";
 import p1 from "@/assets/img/cortina_gesso.jpg?hq";
@@ -15,8 +16,6 @@ import p4Meta from "@/assets/img/persiana_painel.jpg?meta";
 import p5 from "@/assets/img/capa_telaInicial3.png?hq";
 import p5Url from "@/assets/img/capa_telaInicial3.png?hq&as=url";
 import p5Meta from "@/assets/img/capa_telaInicial3.png?meta";
-
-const WHATSAPP = "https://wa.me/5521983216443";
 
 const Arrow = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className="h-3.5 w-3.5">
@@ -82,16 +81,16 @@ const Projects = () => (
         ))}
       </div>
 
+      {/* Goes to the full gallery, not to WhatsApp: the long tail of photos
+          lives on its own page so the home page stays light. */}
       <Reveal delay={0.1}>
-        <a
-          href={WHATSAPP}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/projetos"
           className="link-line mt-20 font-medium uppercase tracking-[0.14em] text-gold hover:text-gold-light"
         >
           Ver todos os projetos
           <Arrow />
-        </a>
+        </Link>
       </Reveal>
     </div>
   </section>

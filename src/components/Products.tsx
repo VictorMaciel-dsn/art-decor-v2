@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { reduceMotion } from "@/lib/gsap";
+import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
+import LazyVideo from "./LazyVideo";
 import Img from "./Img";
 import curtains from "@/assets/img/cortina_pregaMacho.jpg?hq";
 import curtainsUrl from "@/assets/img/cortina_pregaMacho.jpg?hq&as=url";
@@ -13,8 +13,6 @@ import motorizedUrl from "@/assets/img/persiana_teto.jpg?hq&as=url";
 import motorizedMeta from "@/assets/img/persiana_teto.jpg?meta";
 import motorizedVideo from "@/assets/img/motorizada.mp4";
 import motorizedPoster from "@/assets/img/motorizada_poster.jpg?w=1280&format=webp&quality=88&as=url";
-
-const WHATSAPP = "https://wa.me/5521983216443";
 
 const Arrow = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className="h-3.5 w-3.5">
@@ -65,70 +63,6 @@ const blocks = [
   },
 ];
 
-/**
- * The clip is several megabytes, so the source is only attached once the
- * block is near the viewport — until then the poster stands in and nothing
- * is downloaded. Playback pauses while the video is off screen, and reduced
- * motion gets the poster alone, with controls to play it deliberately.
- */
-const LazyVideo = ({
-  src,
-  poster,
-  label,
-}: {
-  src: string;
-  poster: string;
-  label: string;
-}) => {
-  const ref = useRef<HTMLVideoElement>(null);
-  const [near, setNear] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    // Reduced motion never preloads: the poster stays until the visitor
-    // presses play, and the controls are there for exactly that.
-    if (reduceMotion) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setNear(true);
-        // Once loaded, keep it in step with visibility rather than letting
-        // it loop unseen behind the rest of the page.
-        if (!reduceMotion && el.src) {
-          if (entry.isIntersecting) el.play().catch(() => {});
-          else el.pause();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <video
-      ref={ref}
-      // Attaching src is what starts the download, so it waits for `near`.
-      // Under reduced motion it is attached up front but never preloaded,
-      // so the controls work without fetching anything until pressed.
-      src={near || reduceMotion ? src : undefined}
-      poster={poster}
-      width={1280}
-      height={720}
-      autoPlay={!reduceMotion}
-      muted
-      loop
-      playsInline
-      controls={reduceMotion}
-      preload="none"
-      aria-label={label}
-      className="photo-warm h-auto w-full"
-    />
-  );
-};
-
 const Products = () => (
   <section className="section-y section-glow section-glow-left">
     <div className="shell">
@@ -163,6 +97,8 @@ const Products = () => (
                       src={b.video}
                       poster={b.poster}
                       label={b.alt}
+                      width={1280}
+                      height={720}
                     />
                   ) : (
                     <Img
@@ -191,15 +127,16 @@ const Products = () => (
                 <p className="mt-6 text-xs font-light uppercase tracking-[0.14em] text-gold/70">
                   {b.detail}
                 </p>
-                <a
-                  href={WHATSAPP}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                {/* Straight to this collection's own section of the
+                    gallery. The block id doubles as the anchor there, so
+                    the two stay in step by construction. */}
+                <Link
+                  to={`/projetos#${b.id}`}
                   className="link-line mt-10 font-medium uppercase tracking-[0.14em] text-gold hover:text-gold-light"
                 >
                   {b.cta}
                   <Arrow />
-                </a>
+                </Link>
               </Reveal>
             </article>
           );

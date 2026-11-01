@@ -173,7 +173,23 @@ const Process = () => {
               <span
                 data-dot={s.n}
                 aria-hidden="true"
-                className="absolute -left-8 top-[7px] h-[11px] w-[11px] rounded-full border border-gold/60 lg:-top-[15px] lg:left-0"
+                // Centred ON the hairline it marks, by offset alone.
+                //
+                // The dot is 11px across (incl. its 1px border) and the
+                // thread is 1px, so the offset is pulled back 5px to put
+                // the dot's centre on the line.
+                //
+                // This cannot be done with a transform or the `translate`
+                // property: GSAP scrubs `scale` here, and CSSPlugin folds
+                // any independent translate into `transform` and then sets
+                // `translate: none`, so the centring would be wiped on the
+                // first tween.
+                //
+                // Mobile: thread at the list's left padding edge (pl-8),
+                // i.e. -left-8 from this <li>, so the dot goes to -37px.
+                // Desktop: thread along the top padding edge (lg:pt-10),
+                // which is 40px above this <li>'s content, so -45px.
+                className="absolute -left-[37px] top-[7px] h-[11px] w-[11px] rounded-full border border-gold/60 lg:-top-[45px] lg:left-0"
                 // Both properties are declared at rest, transparent, so the
                 // scrub has a parseable colour to interpolate from. GSAP
                 // cannot tween out of `box-shadow: none`.
@@ -190,7 +206,7 @@ const Process = () => {
                 }
               />
               <div data-head={s.n} style={dim}>
-                <span className="gold-text-sm font-serif text-lg tracking-[0.2em] lg:mt-8 lg:inline-block">
+                <span className="gold-text-sm font-serif text-3xl tracking-[0.18em] md:text-4xl lg:mt-8 lg:inline-block">
                   {s.n}
                 </span>
                 <h3 className="mt-3 font-serif text-2xl font-light text-ivory">

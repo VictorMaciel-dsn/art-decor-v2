@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { gsap, useGSAP, reduceMotion } from "@/lib/gsap";
 import Logo from "./Logo";
 import Button from "./Button";
@@ -24,6 +25,8 @@ const Arrow = () => (
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const root = useRef<HTMLElement>(null);
   const panel = useRef<HTMLDivElement>(null);
 
@@ -83,9 +86,16 @@ const Header = () => {
     { dependencies: [open], scope: panel },
   );
 
+  // Every nav target is a section of the home page. From another route
+  // (the gallery) there is nothing to scroll to, so go home first and let
+  // Index hand the anchor to Lenis once it has mounted.
   const go = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     setOpen(false);
+    if (pathname !== "/") {
+      navigate("/", { state: { anchor: href } });
+      return;
+    }
     scrollToAnchor(href);
   };
 
@@ -93,7 +103,7 @@ const Header = () => {
     <>
       <header
         ref={root}
-        className={`fixed inset-x-0 top-0 z-50 transition-[padding] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[padding] duration-600 ease-lux ${
           scrolled || open ? "px-4 pt-3 sm:px-6 md:pt-4" : "px-0 pt-0"
         }`}
       >
@@ -112,7 +122,7 @@ const Header = () => {
         {/* Lifts off the top edge and contracts into a floating island.
             Depth comes from the shadow, never a border. */}
         <div
-          className={`mx-auto transition-[max-width,background-color,border-radius,box-shadow,padding] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`mx-auto transition-[max-width,background-color,border-radius,box-shadow,padding] duration-600 ease-lux ${
             scrolled || open
               ? "nav-float max-w-[1180px] px-5 sm:px-7"
               : "max-w-[1440px] bg-gradient-to-b from-ink/60 to-transparent px-6 sm:px-10 lg:px-16 xl:px-24"
@@ -120,7 +130,7 @@ const Header = () => {
           style={{ borderRadius: scrolled || open ? "var(--radius-nav)" : "0px" }}
         >
           <div
-            className={`flex items-center justify-between transition-[height] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`flex items-center justify-between transition-[height] duration-600 ease-lux ${
               scrolled ? "h-14 md:h-16" : "h-20 md:h-24"
             }`}
           >
@@ -168,14 +178,23 @@ const Header = () => {
               aria-expanded={open}
               className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] text-gold lg:hidden"
             >
+              {/* Three bars that fold into an X: the outer two travel to
+                  the middle and cross, while the middle one fades out
+                  under them. The 6px offsets match the gap-[5px] plus the
+                  1px rule, so the two arms meet exactly on centre. */}
               <span
                 className={`block h-px w-6 bg-current transition-transform duration-400 ${
-                  open ? "translate-y-[3px] rotate-45" : ""
+                  open ? "translate-y-[6px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-px w-6 bg-current transition-opacity duration-300 ${
+                  open ? "opacity-0" : "opacity-100"
                 }`}
               />
               <span
                 className={`block h-px w-6 bg-current transition-transform duration-400 ${
-                  open ? "-translate-y-[3px] -rotate-45" : ""
+                  open ? "-translate-y-[6px] -rotate-45" : ""
                 }`}
               />
             </button>
@@ -185,24 +204,43 @@ const Header = () => {
 
       <div
         ref={panel}
-        className="invisible fixed inset-0 z-40 bg-ink opacity-0 lg:hidden"
+        // overflow-hidden: the sparked button's canvas is ~180px wider
+        // than the button itself, and without a clip here it would add a
+        // scrollbar inside the open menu.
+        className="invisible fixed inset-0 z-40 overflow-hidden bg-ink opacity-0 lg:hidden"
       >
-        <nav className="shell flex h-full flex-col justify-center gap-1 pb-16">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              data-mobile-item
-              href={l.href}
-              onClick={(e) => go(e, l.href)}
-              className="border-b border-gold/20 py-5 font-serif text-4xl text-ivory transition-colors duration-300 hover:text-gold"
-            >
-              {l.label}
-            </a>
-          ))}
-          <div data-mobile-item className="mt-10 self-start">
-            <Button href={WHATSAPP} external magnetic={false}>
-              Solicitar orçamento
-            </Button>
+        {/* The bar floats over this panel, so the list reserves room for
+            it at the top (pt-28).
+
+            justify-start + an auto block margin on the list, rather than
+            justify-center: a centred flex column whose content is taller
+            than the box overflows BOTH ends, and the top overflow cannot
+            be scrolled back to — which is what buried the first item
+            under the logo. With auto margins the list is centred only
+            while it fits, and otherwise sits against the top padding.
+
+            overflow-x-hidden rides along with overflow-y-auto because a
+            single `auto` axis makes the other compute to `auto` too, and
+            the sparked button's oversized canvas would then add a
+            sideways scrollbar. */}
+        <nav className="shell flex h-full flex-col justify-start gap-1 overflow-y-auto overflow-x-hidden pb-16 pt-28">
+          <div className="my-auto flex flex-col gap-1">
+            {links.map((l) => (
+              <a
+                key={l.href}
+                data-mobile-item
+                href={l.href}
+                onClick={(e) => go(e, l.href)}
+                className="border-b border-gold/20 py-4 font-serif text-[1.75rem] text-ivory transition-colors duration-300 hover:text-gold sm:py-5 sm:text-4xl"
+              >
+                {l.label}
+              </a>
+            ))}
+            <div data-mobile-item className="mt-9 self-start">
+              <Button href={WHATSAPP} spark external magnetic={false}>
+                Solicitar orçamento
+              </Button>
+            </div>
           </div>
         </nav>
       </div>

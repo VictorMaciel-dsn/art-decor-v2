@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -9,10 +11,21 @@ import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { useLenis } from "@/hooks/useLenis";
+import { useLenis, scrollToAnchor } from "@/hooks/useLenis";
 
 const Index = () => {
   useLenis();
+  const { state } = useLocation();
+  const anchor = (state as { anchor?: string } | null)?.anchor;
+
+  // Coming back from the gallery via a nav link: the section only exists
+  // once this page has mounted, so the jump is made here rather than in the
+  // header. A frame of delay lets Lenis take over the scroll first.
+  useEffect(() => {
+    if (!anchor) return;
+    const id = requestAnimationFrame(() => scrollToAnchor(anchor));
+    return () => cancelAnimationFrame(id);
+  }, [anchor]);
 
   return (
     <div className="min-h-screen bg-ink">

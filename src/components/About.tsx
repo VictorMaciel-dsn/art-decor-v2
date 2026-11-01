@@ -15,7 +15,7 @@ const About = () => (
           <Reveal>
             <p className="eyebrow">Nossa história</p>
             <h2 className="headline mt-7 font-light text-foreground">
-              40 anos criando ambientes que{" "}
+              45 anos criando ambientes que{" "}
               <span className="gold-text">permanecem.</span>
             </h2>
           </Reveal>
@@ -23,10 +23,10 @@ const About = () => (
           <Reveal delay={0.1}>
             <div className="mt-9 space-y-5 lede max-w-md">
               <p>
-                Desde 1986, a Art Decor veste ambientes em Teresópolis e região.
-                Quatro décadas de ofício nos ensinaram que o essencial não está
-                no que se vê de imediato, mas na precisão de cada medida e no
-                caimento de cada tecido.
+                Desde 1981, a Art Decor veste ambientes em Teresópolis e
+                região. Quatro décadas e meia de ofício nos ensinaram que o
+                essencial não está no que se vê de imediato, mas na precisão
+                de cada medida e no caimento de cada tecido.
               </p>
               <p>
                 Trabalhamos com atendimento próximo, do primeiro desenho à
@@ -40,7 +40,7 @@ const About = () => (
           <Reveal delay={0.2}>
             <div className="mt-12 flex items-center gap-5">
               <span className="gold-text font-serif text-2xl font-light tracking-wide">
-                1986 — 2026
+                1981 — 2026
               </span>
               <span className="gold-rule flex-1 opacity-50" />
             </div>

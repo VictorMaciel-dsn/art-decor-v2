@@ -25,6 +25,21 @@ export default defineConfig(() => ({
           return new URLSearchParams({ as: "meta:width;height" });
         }
         if (!url.searchParams.has("hq")) return new URLSearchParams();
+
+        // `?hq&as=url` asks for the single <img src> fallback rather than
+        // the srcset. Without its own directives it would emit the largest
+        // rendition in the SOURCE format — which for a PNG photo is several
+        // megabytes, heavier than the original. One mid-size WebP instead:
+        // it is only ever used where srcset is unsupported.
+        if (url.searchParams.get("as") === "url") {
+          return new URLSearchParams({
+            format: "webp",
+            quality: "90",
+            w: "1280",
+            withoutEnlargement: "true",
+          });
+        }
+
         return new URLSearchParams({
           format: "webp",
           quality: "90",

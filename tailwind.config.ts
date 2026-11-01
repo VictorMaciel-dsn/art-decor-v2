@@ -13,6 +13,14 @@ export default {
       },
     },
     extend: {
+      // Named because tailwindcss-animate also claims `duration-*`/`ease-*`,
+      // so arbitrary values like `duration-[600ms]` are ambiguous and dropped.
+      transitionDuration: {
+        600: "600ms",
+      },
+      transitionTimingFunction: {
+        lux: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       fontFamily: {
         serif: ["'Cormorant Garamond'", "Georgia", "serif"],
         sans: ["'Inter'", "system-ui", "sans-serif"],

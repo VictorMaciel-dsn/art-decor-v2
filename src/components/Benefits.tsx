@@ -64,6 +64,37 @@ const Benefits = () => {
         stagger: 0.1,
         scrollTrigger: { trigger: root.current, start: "top 78%", once: true },
       });
+
+      // Each numeral fills with gold as its own column reaches the middle
+      // of the screen. On desktop hover already does this, but a phone has
+      // no hover at all — there the scroll is the only thing that can light
+      // them, and it is also what makes the column read as "arriving".
+      //
+      // Scrubbed against the column rather than the section: with four
+      // stacked rows on mobile, a single section-wide trigger would light
+      // all four at once, which is the thing being avoided.
+      gsap.utils.toArray<HTMLElement>("[data-benefit]").forEach((col) => {
+        const digit = col.querySelector("[data-numeral]");
+        if (digit === null) return;
+
+        gsap.fromTo(
+          digit,
+          { "--numeral-lit": 0 },
+          {
+            "--numeral-lit": 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: col,
+              // Lights through the column's approach to centre screen, then
+              // holds. Reversing on the way back up is deliberate: it makes
+              // the list feel like it responds to the scroll in both ways.
+              start: "top 85%",
+              end: "center 55%",
+              scrub: 0.6,
+            },
+          },
+        );
+      });
     },
     { scope: root },
   );
@@ -126,7 +157,7 @@ const Benefits = () => {
                 className="col-topline hidden lg:block"
               />
 
-              <span className="numeral" aria-hidden="true">
+              <span className="numeral" data-numeral aria-hidden="true">
                 {item.n}
               </span>
 
