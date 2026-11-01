@@ -14,10 +14,22 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Playfair Display'", "Georgia", "serif"],
+        serif: ["'Cormorant Garamond'", "Georgia", "serif"],
         sans: ["'Inter'", "system-ui", "sans-serif"],
       },
       colors: {
+        ivory: "hsl(var(--ivory))",
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          surface: "hsl(var(--ink-surface))",
+          raised: "hsl(var(--ink-raised))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
+          deep: "hsl(var(--gold-deep))",
+          pale: "hsl(var(--gold-pale))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -96,6 +108,10 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "gold-drift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "100% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -105,11 +121,13 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         "slide-in-right": "slide-in-right 0.5s ease-out",
         shimmer: "shimmer 2s linear infinite",
+        "gold-drift": "gold-drift 7s ease-in-out infinite alternate",
       },
       boxShadow: {
-        glass: "0 8px 32px hsl(30 20% 10% / 0.1)",
-        soft: "0 4px 20px hsl(30 20% 10% / 0.06)",
-        elevated: "0 8px 40px hsl(30 20% 10% / 0.08)",
+        glass: "0 8px 32px hsl(0 0% 0% / 0.5)",
+        soft: "0 4px 20px hsl(0 0% 0% / 0.4)",
+        elevated: "0 8px 40px hsl(0 0% 0% / 0.55)",
+        gold: "0 10px 40px hsl(var(--gold) / 0.18)",
       },
     },
   },

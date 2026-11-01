@@ -17,22 +17,15 @@ const WhatsAppButton = () => {
       href="https://wa.me/5521983216443"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 1, duration: 0.3 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
+      className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_28px_hsl(0_0%_0%/0.55)] ring-1 ring-gold/50 md:bottom-8 md:right-8 md:h-14 md:w-14"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.96 }}
       aria-label="Contato via WhatsApp"
     >
       <WhatsAppIcon />
-      
-      {/* Pulse Animation */}
-      <motion.div
-        className="absolute inset-0 bg-[#25D366] rounded-full -z-10"
-        animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-      />
     </motion.a>
   );
 };

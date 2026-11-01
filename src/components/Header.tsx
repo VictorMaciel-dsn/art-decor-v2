@@ -1,144 +1,212 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { gsap, useGSAP, reduceMotion } from "@/lib/gsap";
+import Logo from "./Logo";
+import Button from "./Button";
+import { scrollToAnchor } from "@/hooks/useLenis";
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Produtos", href: "#produtos" },
-  { label: "Sobre Nós", href: "#sobre" },
+const WHATSAPP = "https://wa.me/5521983216443";
+
+const links = [
+  { label: "Projetos", href: "#projetos" },
+  { label: "Cortinas", href: "#cortinas" },
+  { label: "Persianas", href: "#persianas" },
+  { label: "Automação", href: "#automacao" },
+  { label: "Sobre nós", href: "#sobre" },
   { label: "Contato", href: "#contato" },
 ];
 
-const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const Arrow = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className="h-3.5 w-3.5">
+    <path d="M4 12h15M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
+const Header = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+
+  // The bar stays put at all times; the only thing scroll drives is whether
+  // it is the transparent strip over the hero or the floating glass island.
+  //
+  // Read straight off the window rather than from a ScrollTrigger. A trigger
+  // with end:"max" stops reporting once a pinned section further down the
+  // page (Process) changes the document height between refreshes, which is
+  // what used to drop the bar back to transparent at the bottom of the page
+  // and let the CTA's gold button show through behind the logo.
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const read = () => setScrolled(window.scrollY > 40);
+    read();
+    window.addEventListener("scroll", read, { passive: true });
+    window.addEventListener("resize", read);
+    return () => {
+      window.removeEventListener("scroll", read);
+      window.removeEventListener("resize", read);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // The overlay owns the scroll lock. Lenis keeps running underneath otherwise.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useGSAP(
+    () => {
+      const el = panel.current;
+      if (!el) return;
+      el.dataset.open = String(open);
+
+      if (reduceMotion) {
+        gsap.set(el, { autoAlpha: open ? 1 : 0 });
+        return;
+      }
+
+      if (open) {
+        gsap.set(el, { autoAlpha: 1 });
+        gsap.from(el, { autoAlpha: 0, duration: 0.4, ease: "power2.out" });
+        gsap.from(el.querySelectorAll("[data-mobile-item]"), {
+          opacity: 0,
+          y: 18,
+          duration: 0.6,
+          stagger: 0.05,
+          delay: 0.08,
+          ease: "power3.out",
+        });
+      } else {
+        gsap.to(el, { autoAlpha: 0, duration: 0.3, ease: "power2.in" });
+      }
+    },
+    { dependencies: [open], scope: panel },
+  );
+
+  const go = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    setOpen(false);
+    scrollToAnchor(href);
+  };
+
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? "glass-card py-3 md:py-4"
-          : "bg-transparent py-4 md:py-6"
-      }`}
-    >
-      <div className="container mx-auto px-4 md:px-6 lg:px-12">
-        <nav className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.a
-            href="#home"
-            className="text-xl md:text-2xl font-serif font-semibold text-foreground"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+    <>
+      <header
+        ref={root}
+        className={`fixed inset-x-0 top-0 z-50 transition-[padding] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          scrolled || open ? "px-4 pt-3 sm:px-6 md:pt-4" : "px-0 pt-0"
+        }`}
+      >
+        {/* The island is narrower than the bar, so the padding either side
+            is a clear window onto whatever is scrolling past underneath —
+            which is how the CTA's gold button used to appear beside the
+            wordmark at the foot of the page. This scrim closes that gap
+            while keeping the island reading as glass that floats. */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 h-[calc(100%+2.5rem)] bg-[linear-gradient(to_bottom,hsl(var(--ink))_0%,hsl(var(--ink))_62%,hsl(var(--ink)/0.75)_80%,transparent_100%)] transition-opacity duration-500 ${
+            scrolled || open ? "opacity-100" : "opacity-0"
+          }`}
+        />
+
+        {/* Lifts off the top edge and contracts into a floating island.
+            Depth comes from the shadow, never a border. */}
+        <div
+          className={`mx-auto transition-[max-width,background-color,border-radius,box-shadow,padding] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            scrolled || open
+              ? "nav-float max-w-[1180px] px-5 sm:px-7"
+              : "max-w-[1440px] bg-gradient-to-b from-ink/60 to-transparent px-6 sm:px-10 lg:px-16 xl:px-24"
+          }`}
+          style={{ borderRadius: scrolled || open ? "var(--radius-nav)" : "0px" }}
+        >
+          <div
+            className={`flex items-center justify-between transition-[height] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              scrolled ? "h-14 md:h-16" : "h-20 md:h-24"
+            }`}
           >
-            Art Decor
-          </motion.a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8 lg:gap-10">
-            {navLinks.map((link, index) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                className="relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index, duration: 0.4 }}
-                whileHover={{ y: -2 }}
-              >
-                {link.label}
-                <motion.span
-                  className="absolute -bottom-1 left-0 h-0.5 bg-primary origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  style={{ width: "100%" }}
-                />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* CTA Button */}
-          <motion.a
-            href="https://wa.me/5521983216443"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:block btn-primary text-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Solicitar Orçamento
-          </motion.a>
-
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden p-2 text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </motion.button>
-        </nav>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden mt-4 pb-6 overflow-hidden"
+            <a
+              href="#top"
+              onClick={(e) => go(e, "#top")}
+              aria-label="Art Decor — início"
+              className="shrink-0"
             >
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="glass-card rounded-2xl p-6"
-              >
-                <div className="flex flex-col gap-4">
-                  {navLinks.map((link, index) => (
-                    <motion.a
-                      key={link.label}
-                      href={link.href}
-                      className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors py-2 px-4 rounded-xl hover:bg-primary/10"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.05 * index }}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {link.label}
-                    </motion.a>
-                  ))}
-                  <motion.a
-                    href="https://wa.me/5521983216443"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary text-center mt-2"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Solicitar Orçamento
-                  </motion.a>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <Logo
+                sheen
+                className={`transition-all duration-500 ${
+                  scrolled ? "text-xl" : "text-2xl md:text-[1.75rem]"
+                }`}
+              />
+            </a>
+
+            <nav className="hidden items-center gap-9 lg:flex">
+              {links.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={(e) => go(e, l.href)}
+                  className="link-line font-light text-ivory/70 hover:text-gold"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-cta hidden lg:inline-flex"
+            >
+              Solicitar orçamento
+              <Arrow />
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={open}
+              className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] text-gold lg:hidden"
+            >
+              <span
+                className={`block h-px w-6 bg-current transition-transform duration-400 ${
+                  open ? "translate-y-[3px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-px w-6 bg-current transition-transform duration-400 ${
+                  open ? "-translate-y-[3px] -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div
+        ref={panel}
+        className="invisible fixed inset-0 z-40 bg-ink opacity-0 lg:hidden"
+      >
+        <nav className="shell flex h-full flex-col justify-center gap-1 pb-16">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              data-mobile-item
+              href={l.href}
+              onClick={(e) => go(e, l.href)}
+              className="border-b border-gold/20 py-5 font-serif text-4xl text-ivory transition-colors duration-300 hover:text-gold"
+            >
+              {l.label}
+            </a>
+          ))}
+          <div data-mobile-item className="mt-10 self-start">
+            <Button href={WHATSAPP} external magnetic={false}>
+              Solicitar orçamento
+            </Button>
+          </div>
+        </nav>
       </div>
-    </motion.header>
+    </>
   );
 };
 

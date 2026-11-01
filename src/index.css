@@ -1,112 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Art Decor Premium Design System */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
-
 @layer base {
   :root {
-    /* Premium Warm Palette */
-    --background: 40 33% 98%;
-    --foreground: 30 10% 15%;
+    /* Warm black & gold. The blacks carry a trace of yellow — a neutral
+       grey-black next to gold reads as cheap screen-black, not ink. */
+    --background: 30 6% 4%;
+    --foreground: 37 33% 93%;
 
-    --card: 40 30% 99%;
-    --card-foreground: 30 10% 15%;
+    --card: 36 8% 6%;
+    --card-foreground: 37 33% 93%;
 
-    --popover: 40 30% 99%;
-    --popover-foreground: 30 10% 15%;
+    --popover: 36 8% 6%;
+    --popover-foreground: 37 33% 93%;
 
-    /* Terracotta Primary */
-    --primary: 18 55% 55%;
-    --primary-foreground: 40 33% 98%;
+    /* Gold — the single accent */
+    --primary: 37 71% 62%;
+    --primary-foreground: 0 0% 4%;
 
-    /* Warm Cream Secondary */
-    --secondary: 35 30% 92%;
-    --secondary-foreground: 30 10% 25%;
+    /* Raised black surface */
+    --secondary: 36 10% 10%;
+    --secondary-foreground: 41 40% 94%;
 
-    /* Soft Sage Accent */
-    --accent: 150 20% 75%;
-    --accent-foreground: 150 30% 25%;
+    --accent: 36 59% 42%;
+    --accent-foreground: 41 40% 94%;
 
-    --muted: 35 20% 94%;
-    --muted-foreground: 30 10% 45%;
+    --muted: 36 8% 13%;
+    --muted-foreground: 38 14% 66%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 25% 88%;
-    --input: 35 25% 88%;
-    --ring: 18 55% 55%;
+    --border: 38 18% 20%;
+    --input: 38 18% 20%;
+    --ring: 37 71% 62%;
 
-    --radius: 1rem;
+    --radius: 0.125rem;
 
-    /* Glass Effect Variables */
-    --glass-bg: 40 30% 99% / 0.7;
-    --glass-border: 35 25% 88% / 0.5;
-    --glass-blur: 20px;
+    /* Gold ramp — #c9a45c principal, #e8cf94 brilho, #8a6d3b sombra */
+    --gold: 37 48% 57%;
+    --gold-light: 41 63% 75%;
+    --gold-deep: 37 40% 39%;
+    --gold-pale: 41 70% 88%;
 
-    /* Gradient Variables */
-    --gradient-warm: linear-gradient(135deg, hsl(35 40% 96%) 0%, hsl(40 33% 98%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(30 20% 10% / 0.3) 0%, hsl(30 20% 10% / 0.6) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(18 55% 55%) 0%, hsl(25 60% 60%) 100%);
+    /* Three warm blacks: base, surface, raised surface. */
+    --ink: 30 6% 4%;
+    --ink-surface: 36 9% 6%;
+    --ink-raised: 36 9% 10%;
+    --ivory: 37 33% 93%;
 
-    /* Shadow Variables */
-    --shadow-sm: 0 2px 8px hsl(30 20% 10% / 0.04);
-    --shadow-md: 0 4px 20px hsl(30 20% 10% / 0.06);
-    --shadow-lg: 0 8px 40px hsl(30 20% 10% / 0.08);
-    --shadow-glass: 0 8px 32px hsl(30 20% 10% / 0.1);
+    /* Text ramp. Named by weight so sections stop inventing /75, /72, /80. */
+    --text-strong: hsl(var(--ivory));
+    --text-muted: hsl(var(--ivory) / 0.7);
+    --text-faint: hsl(var(--ivory) / 0.5);
 
-    --sidebar-background: 40 30% 98%;
-    --sidebar-foreground: 30 10% 25%;
-    --sidebar-primary: 18 55% 55%;
-    --sidebar-primary-foreground: 40 33% 98%;
-    --sidebar-accent: 35 30% 92%;
-    --sidebar-accent-foreground: 30 10% 25%;
-    --sidebar-border: 35 25% 88%;
-    --sidebar-ring: 18 55% 55%;
-  }
+    /* Dark glass. Only ever used where something rich sits behind it. */
+    --glass-bg: hsl(var(--ink) / 0.55);
+    --glass-bg-solid: hsl(var(--ink-surface) / 0.92);
+    --glass-border: hsl(var(--gold) / 0.15);
+    --glass-blur: blur(16px) saturate(140%);
 
-  .dark {
-    --background: 30 15% 8%;
-    --foreground: 40 20% 95%;
+    /* Shared corner radius. Soft enough to feel considered, tight enough to
+       stay architectural — a pill would read as SaaS next to this type. */
+    --radius-btn: 10px;
+    --radius-card: 10px;
+    --radius-nav: 15px;
 
-    --card: 30 15% 10%;
-    --card-foreground: 40 20% 95%;
+    /* Vertical rhythm — 120px climbing to 180px on wide screens. */
+    --section-y: clamp(5.5rem, 11vw, 11.25rem);
 
-    --popover: 30 15% 10%;
-    --popover-foreground: 40 20% 95%;
-
-    --primary: 18 55% 60%;
-    --primary-foreground: 30 15% 8%;
-
-    --secondary: 30 15% 15%;
-    --secondary-foreground: 40 20% 90%;
-
-    --accent: 150 20% 35%;
-    --accent-foreground: 150 20% 90%;
-
-    --muted: 30 15% 18%;
-    --muted-foreground: 30 10% 60%;
-
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 30 15% 18%;
-    --input: 30 15% 18%;
-    --ring: 18 55% 60%;
-
-    --glass-bg: 30 15% 12% / 0.8;
-    --glass-border: 30 15% 25% / 0.5;
-
-    --sidebar-background: 30 15% 8%;
-    --sidebar-foreground: 40 20% 90%;
-    --sidebar-primary: 18 55% 60%;
-    --sidebar-primary-foreground: 30 15% 8%;
-    --sidebar-accent: 30 15% 15%;
-    --sidebar-accent-foreground: 40 20% 90%;
-    --sidebar-border: 30 15% 18%;
-    --sidebar-ring: 18 55% 60%;
+    /* Brushed-metal sweep shared by text, rules and borders */
+    --gold-sheen: linear-gradient(
+      100deg,
+      hsl(var(--gold-deep)) 0%,
+      hsl(var(--gold)) 18%,
+      hsl(var(--gold-pale)) 34%,
+      hsl(var(--gold-light)) 42%,
+      hsl(var(--gold)) 55%,
+      hsl(var(--gold-deep)) 72%,
+      hsl(var(--gold)) 86%,
+      hsl(var(--gold-light)) 100%
+    );
   }
 }
 
@@ -116,115 +93,602 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    background-color: hsl(var(--ink));
+  }
+
+  /* Lenis owns scrolling. Native smooth-scroll would fight scrollTo(), so it
+     is only switched on when Lenis is absent — the reduced-motion path. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-    @apply font-medium tracking-tight;
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply font-normal;
+    letter-spacing: -0.015em;
   }
 
-  /* Custom Scrollbar */
-  *::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background-color: hsl(var(--background));
+  ::selection {
+    background: hsl(var(--gold) / 0.28);
+    color: hsl(var(--gold-pale));
+  }
+
+  /* No global image-rendering rule. -webkit-optimize-contrast makes Chrome
+     downscale without proper smoothing, which shreds fine type inside a
+     logo. Anything that genuinely wants it opts in with .img-crisp. */
+  .img-crisp {
+    image-rendering: -webkit-optimize-contrast;
   }
 
   *::-webkit-scrollbar {
-    width: 7px;
-    height: 5px;
-    background-color: hsl(var(--background));
+    width: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(var(--ink));
   }
 
   *::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(to bottom, hsl(18 55% 55%), hsl(25 60% 60%));
+    background: hsl(var(--gold) / 0.45);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--gold) / 0.7);
   }
 }
 
 @layer components {
-  /* Glass Card Effect */
-  .glass-card {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid hsl(var(--glass-border));
-    box-shadow: var(--shadow-glass);
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24;
   }
 
-  /* Premium Button Styles */
-  .btn-primary {
-    @apply relative overflow-hidden;
-    background: var(--gradient-accent);
-    @apply text-primary-foreground font-medium;
-    @apply px-6 py-3 md:px-8 md:py-4 rounded-full;
-    @apply transition-all duration-300 ease-out;
-    @apply shadow-md hover:shadow-lg;
-    @apply hover:scale-[1.02] active:scale-[0.98];
+  .section-y {
+    padding-top: var(--section-y);
+    padding-bottom: var(--section-y);
   }
 
-  .btn-glass {
-    @apply glass-card;
-    @apply text-foreground font-medium;
-    @apply px-5 py-2.5 md:px-6 md:py-3 rounded-full;
-    @apply transition-all duration-300 ease-out;
-    @apply hover:bg-card/90;
+  /* Small uppercase editorial label, led by a short gold rule. */
+  .eyebrow {
+    @apply inline-flex items-center text-[0.6875rem] font-medium uppercase;
+    letter-spacing: 0.3em;
+    color: hsl(var(--gold));
   }
 
-  /* Section Styles */
-  .section-padding {
-    @apply px-4 py-16 md:px-6 md:py-24 lg:px-12 lg:py-32;
-  }
-
-  .section-title {
-    @apply text-2xl md:text-4xl lg:text-5xl font-medium;
-    @apply text-foreground mb-3 md:mb-4;
-  }
-
-  .section-subtitle {
-    @apply text-base md:text-lg lg:text-xl text-muted-foreground;
-    @apply max-w-2xl;
-  }
-
-  /* Premium Card Hover */
-  .premium-card {
-    @apply relative overflow-hidden rounded-2xl;
-    @apply transition-all duration-500 ease-out;
-    @apply hover:shadow-lg hover:-translate-y-1;
-  }
-
-  .premium-card::after {
+  .eyebrow::before {
     content: '';
-    @apply absolute inset-0 opacity-0;
-    @apply transition-opacity duration-500;
-    background: linear-gradient(180deg, transparent 50%, hsl(var(--foreground) / 0.1) 100%);
+    @apply mr-4 inline-block h-px w-8 shrink-0 align-middle;
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--gold) / 0) 0%,
+      hsl(var(--gold)) 100%
+    );
   }
 
-  .premium-card:hover::after {
+  .display {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.75rem, 7.5vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.125rem, 4.6vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    @apply text-base leading-relaxed text-muted-foreground sm:text-lg;
+  }
+
+  /* ── Metallic gold ──────────────────────────────────────────────
+     Gradient clipped to the glyphs, so the text reads as leaf gold
+     rather than flat yellow. The faint drop-shadow is the "lift"
+     off the black that a printed foil has. */
+  .gold-text {
+    /* Clipping to the glyphs crops italic descenders flush; the padding and
+       negative margin give them room without moving the text. */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 0 hsl(var(--gold-deep) / 0.55));
+  }
+
+  /* Same foil, but it drifts — for the hero and the wordmark */
+  .gold-text-sheen {
+    animation: gold-drift 7s ease-in-out infinite alternate;
+  }
+
+  /* Small type can't carry the full ramp — its dark stops read as holes.
+     This keeps the metal look but stays legible at caption sizes. */
+  .gold-text-sm {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--gold)) 0%,
+      hsl(var(--gold-light)) 38%,
+      hsl(var(--gold-pale)) 52%,
+      hsl(var(--gold-light)) 66%,
+      hsl(var(--gold)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gold-rule {
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    @apply h-px w-full border-0;
+  }
+
+  /* Hairline gold frame with a lit top edge */
+  .gold-edge {
+    border: 1px solid hsl(var(--gold) / 0.3);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--gold-light) / 0.22),
+      0 0 0 1px hsl(var(--ink) / 0.6);
+  }
+
+  /* Underline that draws in on hover */
+  .link-line {
+    @apply relative inline-flex items-center gap-2 text-sm tracking-wide;
+    transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-line::after {
+    content: '';
+    @apply absolute bottom-[-4px] left-0 h-px w-full origin-left scale-x-0;
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-line:hover::after {
+    @apply scale-x-100;
+  }
+
+  .link-line svg {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-line:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────
+     Shared geometry. The label sits in a fixed-height mask so the
+     hover "roll" has something to clip against. */
+  .btn-solid,
+  .btn-outline {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden px-7 py-3.5;
+    @apply text-[0.8125rem] font-medium uppercase tracking-[0.12em];
+    border-radius: var(--radius-btn);
+    isolation: isolate;
+    white-space: nowrap;
+  }
+
+  /* The label never moves on hover — only the surface under it changes.
+     A single static line, no duplicate, no roll. */
+  .btn-label {
+    @apply relative block;
+  }
+
+  .btn-solid svg,
+  .btn-outline svg {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-solid:hover svg,
+  .btn-outline:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* Solid gold — brushed fill, ink label */
+  .btn-solid {
+    color: hsl(var(--ink));
+    background-image: var(--gold-sheen);
+    background-size: 220% 100%;
+    background-position: 12% 50%;
+    box-shadow:
+      inset 0 1px 0 hsl(var(--gold-pale) / 0.65),
+      inset 0 -1px 0 hsl(var(--gold-deep) / 0.5),
+      0 6px 24px hsl(var(--gold) / 0.14);
+    transition:
+      filter 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Hover lifts the whole fill a touch and deepens the bloom. Nothing
+     travels across the button; the brightness change carries it. */
+  .btn-solid:hover {
+    filter: brightness(1.12) saturate(1.05);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--gold-pale) / 0.85),
+      inset 0 -1px 0 hsl(var(--gold-deep) / 0.5),
+      0 10px 32px hsl(var(--gold) / 0.32);
+  }
+
+  /* Secondary — dark glass behind a gold hairline. */
+  .btn-outline {
+    color: hsl(var(--gold));
+    background-color: hsl(var(--ink) / 0.45);
+    border: 1px solid hsl(var(--gold) / 0.45);
+    transition:
+      color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .btn-outline {
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      backdrop-filter: blur(12px) saturate(140%);
+    }
+  }
+
+  /* The gold fill fades up in place rather than wiping across, so the label
+     never sits over a moving edge. */
+  .btn-outline::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10 opacity-0;
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-outline:hover {
+    color: hsl(var(--ink));
+    border-color: hsl(var(--gold));
+    box-shadow: 0 8px 26px hsl(var(--gold) / 0.22);
+  }
+
+  .btn-outline:hover::before {
     @apply opacity-100;
+  }
+
+  /* ── Dark glass ─────────────────────────────────────────────────
+     Only ever placed over a photo or a moving glow — blur with flat
+     colour behind it is just a translucent box. The solid fallback
+     comes first so browsers without backdrop-filter get an opaque
+     panel rather than unreadable text over an image. */
+  .glass {
+    background-color: var(--glass-bg-solid);
+    border: 1px solid var(--glass-border);
+    border-radius: 3px;
+    box-shadow:
+      inset 0 1px 0 hsl(var(--gold-light) / 0.1),
+      0 8px 32px hsl(0 0% 0% / 0.45);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .glass {
+      background-color: var(--glass-bg);
+      -webkit-backdrop-filter: var(--glass-blur);
+      backdrop-filter: var(--glass-blur);
+    }
+  }
+
+  /* Sections all sit on the same near-black. Separation comes from a very
+     faint gold bloom rather than a different fill — a lighter panel between
+     two black ones reads as a seam, and the hard edge gives away the join. */
+  .section-glow {
+    @apply relative isolate;
+    background-color: hsl(var(--ink));
+  }
+
+  .section-glow::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10;
+    background-image: radial-gradient(
+      ellipse 80% 55% at 50% 42%,
+      hsl(var(--gold) / 0.055) 0%,
+      hsl(var(--gold) / 0.02) 42%,
+      transparent 72%
+    );
+  }
+
+  /* Alternate placement so consecutive glowing sections do not pulse in step. */
+  .section-glow-left::before {
+    background-image: radial-gradient(
+      ellipse 70% 60% at 18% 38%,
+      hsl(var(--gold) / 0.06) 0%,
+      transparent 68%
+    );
+  }
+
+  .section-glow-right::before {
+    background-image: radial-gradient(
+      ellipse 70% 60% at 85% 50%,
+      hsl(var(--gold) / 0.055) 0%,
+      transparent 68%
+    );
+  }
+
+  /* The floating navbar island. No border — depth is carried entirely by a
+     deep soft shadow plus a lit top edge, which is what keeps it reading as
+     glass hovering over the page rather than a bar stuck to it. */
+  .nav-float {
+    background-color: var(--glass-bg-solid);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--gold-light) / 0.1),
+      0 18px 50px -12px hsl(0 0% 0% / 0.85),
+      0 2px 10px hsl(0 0% 0% / 0.4);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .nav-float {
+      /* Opaque enough that a bright element passing underneath — the CTA's
+         gold button on the way to the footer — does not read through the
+         glass behind the wordmark. Still translucent, just not a window. */
+      background-color: hsl(var(--ink) / 0.86);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      backdrop-filter: blur(18px) saturate(150%);
+    }
+  }
+
+  /* The navbar's quote button. Same corner radius and type as the hero
+     buttons, but compact enough to sit inside a 56px bar. It reads as an
+     outline chip at rest and fills with the hero's gold on hover. */
+  .nav-cta {
+    @apply relative inline-flex items-center gap-2 overflow-hidden px-5 py-2.5;
+    @apply text-[0.6875rem] font-medium uppercase;
+    letter-spacing: 0.14em;
+    border-radius: var(--radius-btn);
+    border: 1px solid hsl(var(--gold) / 0.5);
+    color: hsl(var(--gold));
+    isolation: isolate;
+    white-space: nowrap;
+    transition:
+      color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-cta::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10 opacity-0;
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-cta svg {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-cta:hover {
+    color: hsl(var(--ink));
+    border-color: hsl(var(--gold));
+    box-shadow: 0 6px 20px hsl(var(--gold) / 0.25);
+  }
+
+  .nav-cta:hover::before {
+    @apply opacity-100;
+  }
+
+  .nav-cta:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* ── Diferenciais ───────────────────────────────────────────────
+     Editorial columns, no cards. The separator is a single hairline
+     drawn on the left edge of every column but the first; it scales
+     from the top so ScrollTrigger can draw it in. */
+  .edge-rule {
+    @apply pointer-events-none absolute left-0 top-0 h-full w-px origin-top;
+    background-image: linear-gradient(
+      to bottom,
+      hsl(var(--gold) / 0) 0%,
+      hsl(var(--gold) / 0.28) 18%,
+      hsl(var(--gold) / 0.28) 82%,
+      hsl(var(--gold) / 0) 100%
+    );
+  }
+
+  /* Mobile runs the same hairline horizontally between stacked rows. */
+  .edge-rule-h {
+    @apply pointer-events-none absolute left-0 top-0 h-px w-full origin-left;
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--gold) / 0) 0%,
+      hsl(var(--gold) / 0.28) 18%,
+      hsl(var(--gold) / 0.28) 82%,
+      hsl(var(--gold) / 0) 100%
+    );
+  }
+
+  /* The gold line that grows across the top of a column on hover. */
+  .col-topline {
+    @apply pointer-events-none absolute left-0 top-0 h-px w-full origin-left scale-x-0;
+    background-image: var(--gold-sheen);
+    background-size: 200% 100%;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Big outlined numeral. Transparent fill with a gold stroke, so it reads
+     as a watermark rather than a heading. */
+  .numeral {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply block leading-none;
+    font-size: clamp(3.75rem, 5.6vw, 5.25rem);
+    color: transparent;
+    -webkit-text-stroke: 1px hsl(var(--gold) / 0.45);
+    opacity: 0.4;
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .benefit-col .benefit-icon {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* The cursor-following pool, reused from the glass cards but without a
+     card to sit in — it fades over the bare column. */
+  .benefit-col::after {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10 opacity-0;
+    background: radial-gradient(
+      220px circle at var(--mx, 50%) var(--my, 50%),
+      hsl(var(--gold) / 0.1),
+      transparent 70%
+    );
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .benefit-col:hover::after {
+      @apply opacity-100;
+    }
+
+    .benefit-col:hover .col-topline {
+      @apply scale-x-100;
+    }
+
+    .benefit-col:hover .numeral {
+      opacity: 0.95;
+    }
+
+    .benefit-col:hover .benefit-icon {
+      transform: translateY(-4px);
+      border-color: hsl(var(--gold) / 0.6);
+    }
+  }
+
+  /* A soft gold pool that tracks the cursor inside a glass card. The
+     coordinates arrive as --mx/--my from a mousemove handler; without them
+     the gradient simply sits at the top-left at zero opacity, so a card
+     never depends on JS having run. */
+  .glass-spot {
+    @apply relative overflow-hidden;
+  }
+
+  .glass-spot::after {
+    content: '';
+    @apply pointer-events-none absolute inset-0 opacity-0;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      hsl(var(--gold) / 0.14),
+      transparent 70%
+    );
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .glass-spot:hover::after {
+      @apply opacity-100;
+    }
+  }
+
+  /* Grain. Fixed over everything, under the cursor — large flat areas of
+     near-black band badly on 8-bit panels, and ~3.5% noise hides it. */
+  .grain {
+    @apply pointer-events-none fixed inset-0 z-[100];
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Slow zoom on image hover */
+  .zoom-frame {
+    @apply relative overflow-hidden;
+    background-color: hsl(var(--ink-raised));
+  }
+
+  .zoom-frame img {
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .zoom-frame:hover img {
+    transform: scale(1.04);
+  }
+
+  /* Hairline gold line that reveals on hover, over the image */
+  .zoom-frame::after {
+    content: '';
+    @apply pointer-events-none absolute inset-0;
+    box-shadow: inset 0 0 0 1px hsl(var(--gold) / 0);
+    transition: box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .zoom-frame:hover::after {
+    box-shadow: inset 0 0 0 1px hsl(var(--gold) / 0.4);
   }
 }
 
 @layer utilities {
-  /* Text Gradient */
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-accent);
+  .rule {
+    @apply h-px w-full;
+    background-color: hsl(var(--border));
   }
 
-  /* Smooth Scroll Snap */
-  .scroll-snap-y {
-    scroll-snap-type: y proximity;
+  /* Warm the photos up so they sit in the black-and-gold world */
+  .photo-warm {
+    filter: saturate(1.04) contrast(1.06) brightness(0.97);
+  }
+}
+
+/* Scroll cue: a short gold segment falling down its track, on a loop with a
+   pause at the end so it reads as a cue rather than a loading bar. */
+.scroll-track::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 40%;
+  background-image: linear-gradient(
+    to bottom,
+    hsl(var(--gold) / 0),
+    hsl(var(--gold))
+  );
+  animation: scroll-cue 2.4s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(250%);
+  }
+}
+
+@keyframes gold-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing drifts, pulses or waits to be scrolled into view. GSAP bails out
+     on its own (see lib/gsap.ts); this covers the purely CSS motion. */
+  .gold-text-sheen,
+  .gold-glow {
+    animation: none !important;
   }
 
-  .scroll-snap-start {
-    scroll-snap-align: start;
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

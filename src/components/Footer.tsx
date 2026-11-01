@@ -1,123 +1,124 @@
-import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Instagram, Facebook } from "lucide-react";
+import Reveal from "./Reveal";
+// art-decor-seal.png is the original JPEG cropped to its own gold circle with
+// a transparent outside, so the seal sits straight on the footer's ink rather
+// than on a black square that never quite matched it. Resized at build time to
+// the 1x/2x/3x renditions it is actually displayed at.
+import sealSet from "@/assets/logos/art-decor-seal.png?w=192;384;576&format=webp&quality=95&as=srcset";
+import sealUrl from "@/assets/logos/art-decor-seal.png?w=384&format=png&as=url";
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+const WHATSAPP = "https://wa.me/5521983216443";
+const MAPS = "https://maps.google.com/?q=Av.+Lúcio+Meira,+551+-+Várzea,+Teresópolis+-+RJ";
 
-  return (
-    <footer className="bg-foreground text-primary-foreground">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 md:px-6 lg:px-12 py-12 md:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-          {/* Brand */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h3 className="text-xl md:text-2xl font-serif font-semibold mb-3 md:mb-4">Art Decor</h3>
-            <p className="text-sm md:text-base text-primary-foreground/70 leading-relaxed">
-              40 anos transformando ambientes com elegância.
+const nav = [
+  { label: "Cortinas", href: "#cortinas" },
+  { label: "Persianas", href: "#persianas" },
+  { label: "Automação", href: "#automacao" },
+  { label: "Projetos", href: "#projetos" },
+  { label: "Sobre nós", href: "#sobre" },
+  { label: "Contato", href: "#contato" },
+];
+
+const Footer = () => (
+  <footer id="contato" className="relative scroll-mt-28 bg-ink text-ivory">
+    <div className="gold-rule" />
+    <div className="shell py-20 md:py-28">
+      <Reveal>
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-10">
+          <div className="md:col-span-5">
+            {/* The source is already cropped to the circle with a transparent
+                outside, so no rounded-full / object-cover is needed — those
+                were shaving the gold stroke off its own artwork. */}
+            <img
+              src={sealUrl}
+              srcSet={sealSet}
+              sizes="(min-width: 768px) 192px, 160px"
+              alt="Art Decor de Teresópolis — cortinas e persianas"
+              width={192}
+              height={192}
+              loading="lazy"
+              decoding="async"
+              className="h-40 w-40 object-contain md:h-48 md:w-48"
+            />
+            <p className="mt-7 max-w-xs text-sm font-light leading-relaxed text-ivory/60">
+              Cortinas, persianas e automação sob medida. 40 anos vestindo
+              ambientes em Teresópolis e região.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <h4 className="text-base md:text-lg font-medium mb-3 md:mb-4">Contato</h4>
-            <ul className="space-y-2 md:space-y-3">
+          <nav className="md:col-span-3">
+            <p className="text-[0.6875rem] uppercase tracking-[0.2em] text-gold/70">
+              Navegação
+            </p>
+            <ul className="mt-6 space-y-3">
+              {nav.map((n) => (
+                <li key={n.href}>
+                  <a
+                    href={n.href}
+                    className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"
+                  >
+                    {n.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="md:col-span-4">
+            <p className="text-[0.6875rem] uppercase tracking-[0.2em] text-gold/70">
+              Contato
+            </p>
+            <ul className="mt-6 space-y-3 text-sm font-light text-ivory/75">
               <li>
                 <a
-                  href="https://wa.me/5521983216443"
+                  href={WHATSAPP}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 md:gap-3 text-sm md:text-base text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+                  className="transition-colors duration-300 hover:text-gold"
                 >
-                  <Phone className="w-4 h-4" />
-                  (21) 98321-6443
+                  WhatsApp · (21) 98321-6443
                 </a>
               </li>
               <li>
                 <a
                   href="mailto:cortinas@gmail.com.br"
-                  className="flex items-center gap-2 md:gap-3 text-sm md:text-base text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+                  className="transition-colors duration-300 hover:text-gold"
                 >
-                  <Mail className="w-4 h-4" />
                   cortinas@gmail.com.br
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors duration-300 hover:text-gold"
+                >
+                  Instagram
+                </a>
+              </li>
+              <li className="pt-3">
+                <a
+                  href={MAPS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="leading-relaxed transition-colors duration-300 hover:text-gold"
+                >
+                  Av. Lúcio Meira, 551 — Várzea
+                  <br />
+                  Teresópolis — RJ
+                </a>
+              </li>
             </ul>
-          </motion.div>
-
-          {/* Address */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <h4 className="text-base md:text-lg font-medium mb-3 md:mb-4">Endereço</h4>
-            <a
-              href="https://maps.google.com/?q=Av.+Lúcio+Meira,+551+-+Várzea,+Teresópolis+-+RJ"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-start gap-2 md:gap-3 text-sm md:text-base text-primary-foreground/70 hover:text-primary-foreground transition-colors"
-            >
-              <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>
-                Av. Lúcio Meira, 551 - Várzea
-                <br />
-                Teresópolis - RJ
-              </span>
-            </a>
-          </motion.div>
-
-          {/* Social */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <h4 className="text-base md:text-lg font-medium mb-3 md:mb-4">Redes Sociais</h4>
-            <div className="flex gap-3 md:gap-4">
-              <motion.a
-                href="#"
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Instagram className="w-4 h-4 md:w-5 md:h-5" />
-              </motion.a>
-              <motion.a
-                href="#"
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Facebook className="w-4 h-4 md:w-5 md:h-5" />
-              </motion.a>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-primary-foreground/10">
-        <div className="container mx-auto px-4 md:px-6 lg:px-12 py-4 md:py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-xs md:text-sm text-primary-foreground/50">
-            <p>© {currentYear} Art Decor. Todos os direitos reservados.</p>
-            <p>Teresópolis - RJ, Brasil</p>
           </div>
         </div>
+      </Reveal>
+
+      <div className="mt-20 flex flex-col justify-between gap-3 border-t border-gold/15 pt-8 text-[0.6875rem] uppercase tracking-[0.16em] text-ivory/40 sm:flex-row">
+        <p>© {new Date().getFullYear()} Art Decor</p>
+        <p>Teresópolis — RJ, Brasil</p>
       </div>
-    </footer>
-  );
-};
+    </div>
+  </footer>
+);
 
 export default Footer;

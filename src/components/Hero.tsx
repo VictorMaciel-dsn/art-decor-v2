@@ -1,122 +1,186 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import heroImage from "@/assets/hero-living-room.jpg";
+import { useRef } from "react";
+import { gsap, useGSAP, EASE, reduceMotion, MOBILE_BREAKPOINT } from "@/lib/gsap";
+import SplitReveal from "./SplitReveal";
+import Button from "./Button";
+import CurtainIntro from "./CurtainIntro";
+import { playsIntro } from "@/lib/intro";
+import { scrollToAnchor } from "@/hooks/useLenis";
+import heroImage from "@/assets/img/tela_capa.png?hq";
+import heroImageUrl from "@/assets/img/tela_capa.png?hq&as=url";
+
+const WHATSAPP = "https://wa.me/5521983216443";
+
+/** The curtain covers the first 1.85s; content starts as it clears. */
+const OPEN_AT = playsIntro ? 1.5 : 0.15;
 
 const Hero = () => {
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 500], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const root = useRef<HTMLElement>(null);
+  const image = useRef<HTMLImageElement>(null);
+
+  useGSAP(
+    () => {
+      if (reduceMotion) return;
+
+      // Slow pull-back on the photo. Starts under the curtain so the reveal
+      // lands on an image already in motion rather than a still frame.
+      gsap.from(image.current, {
+        scale: 1.25,
+        duration: 2.6,
+        ease: EASE,
+        delay: playsIntro ? 0.9 : 0,
+      });
+
+      gsap
+        .timeline({ delay: OPEN_AT })
+        .from("[data-hero-rule]", {
+          scaleX: 0,
+          duration: 1.1,
+          ease: "power2.inOut",
+        })
+        .from(
+          "[data-hero-eyebrow]",
+          { opacity: 0, y: 12, duration: 0.8, ease: EASE },
+          "-=0.6",
+        )
+        // The headline runs itself (SplitReveal); these pick up after it.
+        .from(
+          "[data-hero-fade]",
+          { opacity: 0, y: 22, duration: 1, ease: EASE, stagger: 0.14 },
+          "+=0.55",
+        )
+        .from(
+          "[data-hero-scroll]",
+          { opacity: 0, duration: 0.9, ease: "none" },
+          "-=0.4",
+        );
+
+      // Parallax: the photo lags the scroll while the copy lifts and fades out.
+      const mm = gsap.matchMedia();
+      mm.add(`(min-width: ${MOBILE_BREAKPOINT}px)`, () => {
+        const scrub = {
+          trigger: root.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        };
+        gsap.to(image.current, { yPercent: 18, ease: "none", scrollTrigger: scrub });
+        gsap.to("[data-hero-copy]", {
+          yPercent: -14,
+          opacity: 0,
+          ease: "none",
+          scrollTrigger: { ...scrub, end: "bottom 30%" },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
 
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
-      {/* Background Image with Parallax */}
-      <motion.div
-        style={{ y }}
-        className="absolute inset-0 z-0"
+    <>
+      {playsIntro && <CurtainIntro />}
+
+      <section
+        ref={root}
+        id="top"
+        className="relative h-[92vh] min-h-[620px] w-full overflow-hidden lg:h-screen"
       >
-        <img
-          src={heroImage}
-          alt="Sala de estar elegante com cortinas premium"
-          className="w-full h-full object-cover"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/30 to-foreground/60" />
-      </motion.div>
-
-      {/* Content */}
-      <motion.div
-        style={{ opacity }}
-        className="relative z-10 container mx-auto px-4 md:px-6 lg:px-12 text-center"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          {/* Tagline */}
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="inline-block text-xs md:text-sm lg:text-base font-medium text-primary-foreground/90 tracking-widest uppercase mb-4 md:mb-6"
-          >
-            40 Anos de Tradição
-          </motion.span>
-
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-medium text-primary-foreground leading-tight mb-4 md:mb-6"
-          >
-            O Toque Final
-            <br />
-            <span className="italic">da Sua Casa</span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-sm md:text-lg lg:text-xl text-primary-foreground/80 max-w-xl md:max-w-2xl mx-auto mb-8 md:mb-10 px-2"
-          >
-            Cortinas e persianas sob medida com materiais premium.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0"
-          >
-            <motion.a
-              href="https://wa.me/5521983216443"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary text-sm md:text-base lg:text-lg"
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Orçamento Grátis
-            </motion.a>
-            <motion.a
-              href="#produtos"
-              className="glass-card text-primary-foreground font-medium px-6 py-3 md:px-8 md:py-4 rounded-full border border-primary-foreground/30 text-sm md:text-base"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Ver Produtos
-            </motion.a>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="w-5 h-8 md:w-6 md:h-10 border-2 border-primary-foreground/50 rounded-full flex justify-center"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-1 h-2 md:w-1.5 md:h-3 bg-primary-foreground/70 rounded-full mt-2"
+        {/* Oversized so the parallax drift never exposes an edge. */}
+        <div className="absolute inset-0 -top-[10%] h-[120%]">
+          <img
+            ref={image}
+            src={heroImageUrl}
+            srcSet={heroImage}
+            sizes="100vw"
+            // This React version passes through only the lowercase spelling.
+            {...{ fetchpriority: "high" }}
+            width={1672}
+            height={941}
+            alt="Living integrado com cortinas do piso ao teto sob luz quente"
+            className="h-full w-full object-cover"
           />
-        </motion.div>
-      </motion.div>
-    </section>
+        </div>
+
+        {/* Light falls on the fabric and the rest goes to black: a hard wash
+            from the left where the copy sits, a vignette to close the corners,
+            then a fade into the next section so the seam disappears. */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,hsl(var(--ink)/0.94)_0%,hsl(var(--ink)/0.82)_28%,hsl(var(--ink)/0.45)_58%,hsl(var(--ink)/0.15)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_58%_42%,transparent_18%,hsl(var(--ink)/0.5)_72%,hsl(var(--ink)/0.88)_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[28%] bg-[linear-gradient(to_bottom,transparent,hsl(var(--ink)))]" />
+
+        <div className="shell relative flex h-full flex-col justify-end pb-24 md:pb-28 lg:pb-32">
+          <div data-hero-copy>
+            {/* .gold-rule carries w-full, so the width is set inline to keep
+                it from depending on which utility Tailwind emits last. */}
+            <span
+              data-hero-rule
+              style={{ width: "5rem" }}
+              className="gold-rule block origin-left opacity-80"
+            />
+
+            <p
+              data-hero-eyebrow
+              className="mt-7 text-[0.6875rem] font-medium uppercase tracking-[0.3em] text-gold"
+            >
+              40 anos de tradição
+            </p>
+
+            <SplitReveal
+              as="h1"
+              immediate
+              delay={OPEN_AT + 0.45}
+              className="display mt-6 font-light text-ivory"
+            >
+              {/* An explicit break keeps the gold phrase whole on every width;
+                  the nowrap stops it splitting if a narrow screen disagrees. */}
+              O toque final
+              <br />
+              <span className="gold-text gold-text-sheen whitespace-nowrap italic">
+                da sua casa.
+              </span>
+            </SplitReveal>
+
+            <p
+              data-hero-fade
+              className="mt-8 max-w-xl text-base font-light leading-relaxed text-ivory/70 sm:text-lg"
+            >
+              Cortinas e persianas sob medida, com tecidos selecionados,
+              acabamento impecável e soluções inteligentes para transformar
+              seus ambientes.
+            </p>
+
+            <div
+              data-hero-fade
+              className="mt-11 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6"
+            >
+              <Button
+                href="#projetos"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToAnchor("#projetos");
+                }}
+              >
+                Conheça nossos projetos
+              </Button>
+              <Button href={WHATSAPP} variant="outline" external arrow={false}>
+                Solicitar orçamento
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll cue — a gold line travelling down its own track. */}
+        <div
+          data-hero-scroll
+          className="pointer-events-none absolute inset-x-0 bottom-7 hidden flex-col items-center gap-3 lg:flex"
+        >
+          <span className="text-[0.625rem] font-medium uppercase tracking-[0.3em] text-ivory/50">
+            Role
+          </span>
+          <span className="scroll-track relative h-12 w-px overflow-hidden bg-ivory/15" />
+        </div>
+      </section>
+    </>
   );
 };
 

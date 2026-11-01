@@ -1,121 +1,149 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Award, MapPin, Truck, Sparkles } from "lucide-react";
-import GlowingCard from "./GlowingCard";
+import { useRef, type MouseEvent } from "react";
+import { gsap, useGSAP, EASE, reduceMotion } from "@/lib/gsap";
+import { Gem, Ruler, Sparkles, Cpu } from "lucide-react";
+import SplitReveal from "./SplitReveal";
 
-const benefits = [
+const items = [
   {
-    icon: Award,
-    title: "Qualidade Premium",
-    description: "Materiais de primeira linha em cada peça.",
+    n: "01",
+    title: "Curadoria",
+    text: "Tecidos e mecanismos selecionados entre os melhores fornecedores do país, testados antes de entrarem em qualquer projeto.",
+    Icon: Gem,
   },
   {
-    icon: Sparkles,
-    title: "Orçamento Gratuito",
-    description: "Avaliação personalizada sem compromisso.",
+    n: "02",
+    title: "Sob medida",
+    text: "Nada sai de catálogo. Cada peça é desenhada para a janela, o pé-direito e a luz do ambiente em que vai viver.",
+    Icon: Ruler,
   },
   {
-    icon: Truck,
-    title: "Instalação Profissional",
-    description: "Equipe especializada para instalação perfeita.",
+    n: "03",
+    title: "Acabamento",
+    text: "Barra, caimento e trilho revisados peça por peça. O detalhe que ninguém nota é exatamente o que faz a diferença.",
+    Icon: Sparkles,
   },
   {
-    icon: MapPin,
-    title: "Atendimento Regional",
-    description: "Teresópolis e toda a região serrana.",
+    n: "04",
+    title: "Tecnologia",
+    text: "Automação integrada à rotina da casa — cenários, horários e controle por aplicativo ou voz, instalados e configurados.",
+    Icon: Cpu,
   },
 ];
 
-const FloatingIcon = ({ icon: Icon, delay }: { icon: typeof Award; delay: number }) => {
-  return (
-    <motion.div
-      className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-2xl bg-primary/10 flex items-center justify-center"
-      animate={{
-        y: [0, -6, 0],
-        rotate: [0, 3, -3, 0],
-      }}
-      transition={{
-        duration: 4,
-        repeat: Infinity,
-        delay,
-        ease: "easeInOut",
-      }}
-    >
-      <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
-    </motion.div>
-  );
-};
-
-const BenefitCard = ({
-  benefit,
-  index,
-}: {
-  benefit: typeof benefits[0];
-  index: number;
-}) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-      className="group h-full"
-    >
-      <GlowingCard className="h-full rounded-2xl">
-        <motion.div
-          className="glass-card p-6 md:p-8 rounded-2xl h-full text-center"
-          whileHover={{ y: -5, scale: 1.02 }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Floating Icon */}
-          <FloatingIcon icon={benefit.icon} delay={index * 0.5} />
-
-          {/* Content */}
-          <h3 className="text-lg md:text-xl font-serif font-medium text-foreground mb-2 md:mb-3">
-            {benefit.title}
-          </h3>
-          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-            {benefit.description}
-          </p>
-        </motion.div>
-      </GlowingCard>
-    </motion.div>
-  );
-};
-
 const Benefits = () => {
-  const headerRef = useRef(null);
-  const isHeaderInView = useInView(headerRef, { once: true, margin: "-50px" });
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (reduceMotion) return;
+
+      gsap.from("[data-benefit]", {
+        opacity: 0,
+        y: 30,
+        duration: 0.9,
+        ease: EASE,
+        stagger: 0.1,
+        scrollTrigger: { trigger: root.current, start: "top 78%", once: true },
+      });
+
+      // The dividers draw downwards as the columns arrive, so the grid reads
+      // as being ruled rather than as having always been there.
+      gsap.from("[data-benefit-rule]", {
+        scaleY: 0,
+        duration: 1,
+        ease: "power2.inOut",
+        stagger: 0.1,
+        delay: 0.15,
+        scrollTrigger: { trigger: root.current, start: "top 78%", once: true },
+      });
+
+      gsap.from("[data-benefit-rule-h]", {
+        scaleX: 0,
+        duration: 0.8,
+        ease: "power2.inOut",
+        stagger: 0.1,
+        scrollTrigger: { trigger: root.current, start: "top 78%", once: true },
+      });
+    },
+    { scope: root },
+  );
+
+  /** Feeds the cursor position to the column's radial highlight. */
+  const track = (e: MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
 
   return (
-    <section id="contato" className="section-padding bg-muted/30">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Section Header */}
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 20 }}
-          animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-10 md:mb-16"
-        >
-          <span className="text-xs md:text-sm font-medium text-primary tracking-widest uppercase mb-3 block">
-            Por Que Nos Escolher
-          </span>
-          <h2 className="section-title text-center mx-auto text-2xl md:text-4xl lg:text-5xl">
-            Vamos Até a Sua Casa
-          </h2>
-          <p className="section-subtitle text-center mx-auto mt-3 text-sm md:text-lg max-w-xl">
-            Experiência completa do orçamento à instalação.
-          </p>
-        </motion.div>
+    <section
+      ref={root}
+      className="relative isolate overflow-hidden bg-ink py-24 md:py-28 lg:py-32"
+    >
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_30%_40%,hsl(var(--gold)/0.06),transparent_65%)]" />
 
-        {/* Benefits Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {benefits.map((benefit, index) => (
-            <BenefitCard key={benefit.title} benefit={benefit} index={index} />
+      <div className="shell">
+        <p className="eyebrow">Diferenciais</p>
+        <SplitReveal
+          as="h2"
+          className="headline mt-7 max-w-2xl font-light text-foreground"
+        >
+          O que nos torna
+          <br />
+          <span className="gold-text italic">únicos.</span>
+        </SplitReveal>
+
+        {/* Four editorial columns separated by hairlines — no cards, no
+            boxes. On mobile the same hairline runs horizontally between
+            stacked rows. */}
+        <div className="mt-16 grid grid-cols-1 lg:mt-20 lg:grid-cols-4">
+          {items.map((item, i) => (
+            <div
+              key={item.title}
+              data-benefit
+              onMouseMove={track}
+              className="benefit-col relative isolate py-9 lg:px-8 lg:py-0 lg:first:pl-0 lg:last:pr-0"
+            >
+              {/* Vertical divider on every column but the first (desktop). */}
+              {i > 0 && (
+                <span
+                  data-benefit-rule
+                  aria-hidden="true"
+                  className="edge-rule hidden lg:block"
+                />
+              )}
+              {/* Horizontal divider on every row but the first (mobile). */}
+              {i > 0 && (
+                <span
+                  data-benefit-rule-h
+                  aria-hidden="true"
+                  className="edge-rule-h lg:hidden"
+                />
+              )}
+              <span
+                aria-hidden="true"
+                className="col-topline hidden lg:block"
+              />
+
+              <span className="numeral" aria-hidden="true">
+                {item.n}
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="benefit-icon mt-7 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/30 text-gold"
+              >
+                <item.Icon strokeWidth={1.25} className="h-5 w-5" />
+              </span>
+
+              <h3 className="mt-6 font-serif text-[1.75rem] font-light leading-tight tracking-wide text-ivory">
+                {item.title}
+              </h3>
+              <p className="mt-3 max-w-xs text-sm font-light leading-relaxed text-ivory/55">
+                {item.text}
+              </p>
+            </div>
           ))}
         </div>
       </div>
