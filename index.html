@@ -6,11 +6,10 @@
     <meta name="theme-color" content="#0B0B0B" />
     <meta name="format-detection" content="telephone=no" />
 
-    <!-- Fonts the first screen needs, fetched in parallel with the CSS
-         instead of after it. Same files src/index.css declares. -->
+    <!-- The two faces of the H1, fetched up front so the headline swaps early.
+         Same files src/index.css declares. -->
     <link rel="preload" href="/src/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/src/assets/fonts/cormorant-garamond-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/src/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- seo:start — per-route tags. scripts/prerender.mjs rewrites this
          block for every page at build time (values from src/lib/seo.ts);
