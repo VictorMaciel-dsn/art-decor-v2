@@ -9,8 +9,12 @@ const steps = [
   { n: "04", title: "Instalação", text: "Nossa equipe instala e revisa cada detalhe até o resultado ficar impecável." },
 ];
 
-/** Dim state every step starts in, and the lit state it scrubs to. */
-const DIM = 0.25;
+/**
+ * The state every step rests in before it lights up. This is text people read,
+ * so the floor is contrast: at this opacity the body copy (ivory/70) still
+ * clears 4.5:1 on ink.
+ */
+const DIM = 0.75;
 
 /** --gold is 37 48% 57%. Written out because GSAP tweens computed colour. */
 const GOLD = "hsl(37, 48%, 57%)";
@@ -22,8 +26,17 @@ const Process = () => {
 
   useGSAP(
     () => {
-      // Reduced motion gets everything lit, no pin, no scrub.
-      if (reduceMotion) return;
+      // Reduced motion gets everything lit, no pin, no scrub. The dim start is
+      // in the pre-rendered markup, so it is undone here rather than skipped.
+      if (reduceMotion) {
+        gsap.set("[data-head], [data-body]", { opacity: 1 });
+        gsap.set("[data-thread]", { scale: 1 });
+        gsap.set("[data-dot]", {
+          backgroundColor: GOLD,
+          boxShadow: `0 0 0 4px ${GOLD_GLOW}`,
+        });
+        return;
+      }
 
       const mm = gsap.matchMedia();
 
@@ -125,8 +138,8 @@ const Process = () => {
     { scope: root },
   );
 
-  /** Pre-scrub appearance. Reduced motion skips straight to lit. */
-  const dim = reduceMotion ? undefined : { opacity: DIM };
+  /** Pre-scrub appearance. */
+  const dim = { opacity: DIM };
 
   return (
     <section
@@ -164,7 +177,7 @@ const Process = () => {
             style={{
               // Collapsed on both axes up front; the timeline's fromTo takes
               // over whichever axis this breakpoint actually uses.
-              transform: reduceMotion ? undefined : "scaleX(0) scaleY(0)",
+              transform: "scaleX(0) scaleY(0)",
             }}
           />
 
@@ -193,17 +206,10 @@ const Process = () => {
                 // Both properties are declared at rest, transparent, so the
                 // scrub has a parseable colour to interpolate from. GSAP
                 // cannot tween out of `box-shadow: none`.
-                style={
-                  reduceMotion
-                    ? {
-                        backgroundColor: GOLD,
-                        boxShadow: `0 0 0 4px ${GOLD_GLOW}`,
-                      }
-                    : {
-                        backgroundColor: GOLD_CLEAR,
-                        boxShadow: `0 0 0 4px ${GOLD_CLEAR}`,
-                      }
-                }
+                style={{
+                  backgroundColor: GOLD_CLEAR,
+                  boxShadow: `0 0 0 4px ${GOLD_CLEAR}`,
+                }}
               />
               <div data-head={s.n} style={dim}>
                 <span className="gold-text-sm font-serif text-3xl tracking-[0.18em] md:text-4xl lg:mt-8 lg:inline-block">
@@ -215,7 +221,7 @@ const Process = () => {
               </div>
               <p
                 data-body={s.n}
-                className="mt-3 text-sm font-light leading-relaxed text-ivory/50"
+                className="mt-3 text-sm font-light leading-relaxed text-ivory/70"
                 style={dim}
               >
                 {s.text}

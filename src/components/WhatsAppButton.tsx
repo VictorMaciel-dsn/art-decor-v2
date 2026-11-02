@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 const WhatsAppIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -11,23 +9,16 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-const WhatsAppButton = () => {
-  return (
-    <motion.a
-      href="https://wa.me/5521983216443"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_28px_hsl(0_0%_0%/0.55)] ring-1 ring-gold/50 md:bottom-8 md:right-8 md:h-14 md:w-14"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.06 }}
-      whileTap={{ scale: 0.96 }}
-      aria-label="Contato via WhatsApp"
-    >
-      <WhatsAppIcon />
-    </motion.a>
-  );
-};
+const WhatsAppButton = () => (
+  <a
+    href="https://wa.me/5521983216443"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="whatsapp-fab fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_28px_hsl(0_0%_0%/0.55)] ring-1 ring-gold/50 md:bottom-8 md:right-8 md:h-14 md:w-14"
+    aria-label="Contato via WhatsApp"
+  >
+    <WhatsAppIcon />
+  </a>
+);
 
 export default WhatsAppButton;

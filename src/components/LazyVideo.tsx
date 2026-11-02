@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { reduceMotion } from "@/lib/gsap";
+import { reduceMotion } from "@/lib/motion";
 
 type Props = {
   src: string;
@@ -31,14 +31,24 @@ const LazyVideo = ({
 }: Props) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [near, setNear] = useState(false);
+  // Starts false to match the pre-rendered markup; React does not patch
+  // attributes that differ during hydration.
+  const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    // React only ever sets `muted` as a property, so it is missing from the
+    // pre-rendered markup, and a hydrated video would be refused autoplay.
+    el.muted = true;
+
     // Reduced motion never preloads: the poster stays until the visitor
     // presses play, and the controls are there for exactly that.
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      setReduced(true);
+      return;
+    }
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -62,17 +72,22 @@ const LazyVideo = ({
       // Attaching src is what starts the download, so it waits for `near`.
       // Under reduced motion it is attached up front but never preloaded,
       // so the controls work without fetching anything until pressed.
-      src={near || reduceMotion ? src : undefined}
-      poster={poster}
+      src={near || reduced ? src : undefined}
+      // Browsers fetch a poster up front even with preload="none", so it waits
+      // too, or it competes with the hero photo for the first load.
+      poster={near || reduced ? poster : undefined}
       width={width}
       height={height}
-      autoPlay={!reduceMotion}
+      autoPlay={!reduced}
       muted
       loop
       playsInline
-      controls={reduceMotion}
+      controls={reduced}
       preload="none"
-      aria-label={label}
+      // Decorative while it loops silently. Under reduced motion it has
+      // controls, which makes it something to operate, so it needs a name.
+      aria-hidden={reduced ? undefined : true}
+      aria-label={reduced ? label : undefined}
       className={`photo-warm h-auto w-full ${className}`}
     />
   );

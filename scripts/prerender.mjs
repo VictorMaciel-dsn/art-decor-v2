@@ -15,7 +15,9 @@
  */
 import { readFile, writeFile, rm, access } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { createHash } from "node:crypto";
 import path from "node:path";
+import Beasties from "beasties";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -46,11 +48,47 @@ const xml = (s) =>
 const sitemapEntries = [];
 const missing = new Set();
 
+/**
+ * The LCP photo's own <source>/<img> candidates, preloaded so the browser
+ * starts on it while still parsing. Lifted from the rendered markup so the two
+ * can never disagree about which file a viewport gets.
+ */
+const heroPreload = (body) => {
+  const picture = body.match(/<picture[\s\S]*?<\/picture>/)?.[0];
+  const source = picture?.match(/<source\b[^>]*>/)?.[0];
+  const img = picture?.match(/<img\b[^>]*>/)?.[0];
+  const attr = (tag, name) => tag?.match(new RegExp(`\\s${name}="([^"]+)"`, "i"))?.[1];
+  const media = attr(source, "media");
+  const narrow = Number(media?.match(/max-width:\s*(\d+)px/)?.[1]);
+  if (!attr(source, "srcset") || !attr(img, "srcset") || !narrow) {
+    throw new Error("could not find the hero <picture> to preload");
+  }
+  const link = (mediaQuery, tag) =>
+    `<link rel="preload" as="image" fetchpriority="high" media="${mediaQuery}" imagesrcset="${attr(tag, "srcset")}" imagesizes="${attr(tag, "sizes")}" />`;
+  return link(media, source) + link(`(min-width: ${narrow + 1}px)`, img);
+};
+
+// Inlines the CSS each page's markup uses, so the stylesheet stops blocking
+// first paint. preload:"body" moves the full sheet to the end of the body, which
+// needs no inline onload handler and so stays compatible with a strict CSP.
+const beasties = new Beasties({
+  path: dist,
+  publicPath: "/",
+  preload: "body",
+  inlineFonts: true,
+  preloadFonts: false,
+  logLevel: "warn",
+  // Set on <html> by the inline script, so absent from the static markup.
+  allowRules: [/no-intro/],
+});
+
 for (const { route, file, priority } of PAGES) {
-  const body = render(route.path);
-  const html = template
-    .replace(SEO_BLOCK, headTags(route))
-    .replace("<!--app-html-->", `<div class="prerender">${body}</div>`);
+  const body = await render(route.path);
+  const html = await beasties.process(
+    template
+      .replace(SEO_BLOCK, headTags(route) + (route === ROUTES.home ? heroPreload(body) : ""))
+      .replace("<!--app-html-->", body),
+  );
   await writeFile(path.join(dist, file), html);
 
   // Every asset the static page points at must exist in the client build —
@@ -81,6 +119,17 @@ for (const { route, file, priority } of PAGES) {
 
 if (missing.size) {
   throw new Error(`prerendered HTML references missing assets:\n${[...missing].join("\n")}`);
+}
+
+// The CSP allows inline scripts by hash, so editing one without updating
+// vercel.json would block it in production. Fail the build instead.
+const vercel = await readFile(path.join(root, "vercel.json"), "utf8");
+const page = await readFile(path.join(dist, "index.html"), "utf8");
+for (const [, code] of page.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+  const hash = createHash("sha256").update(code).digest("base64");
+  if (!vercel.includes(`'sha256-${hash}'`)) {
+    throw new Error(`inline script changed: put 'sha256-${hash}' in the CSP in vercel.json`);
+  }
 }
 
 const lastmod = new Date().toISOString().slice(0, 10);

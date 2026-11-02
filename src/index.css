@@ -1,9 +1,19 @@
 /* Self-hosted webfonts (same families, weights and styles the Google Fonts
    link used to request). Served from our own origin they skip two extra
    connections and a render-blocking stylesheet, and the files get the
-   build's hashed, immutable caching. The latin files — everything Portuguese
-   needs — are preloaded from index.html; latin-ext only downloads if a page
-   ever uses a character from it. */
+   build's hashed, immutable caching. The H1's two latin files are preloaded
+   from index.html; latin-ext only downloads if a page ever uses a character
+   from it. */
+/* Arial reshaped to Inter's metrics. Inter is not preloaded, so text first paints
+   in the fallback, and this keeps lines from reflowing when Inter swaps in. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 107.06%;
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+}
 @font-face {
   font-family: 'Cormorant Garamond';
   font-style: normal;
@@ -168,7 +178,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 300;
   }
 
@@ -290,8 +300,32 @@
     filter: drop-shadow(0 1px 0 hsl(var(--gold-deep) / 0.55));
   }
 
-  /* Same foil, but it drifts — for the hero and the wordmark */
+  /* Same foil, but it drifts — for the hero and the wordmark. Moving a gradient
+     clipped to text can only be done by repainting it, so the far end of the
+     drift is a second copy of the glyphs that fades in over the first. Opacity
+     runs on the compositor; the copy comes from data-sheen so it is not text
+     in the page. */
   .gold-text-sheen {
+    position: relative;
+    display: inline-block;
+  }
+
+  .gold-text-sheen::after {
+    content: attr(data-sheen);
+    content: attr(data-sheen) / "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-bottom: inherit;
+    white-space: nowrap;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    will-change: opacity;
     animation: gold-drift 7s ease-in-out infinite alternate;
   }
 
@@ -504,6 +538,8 @@
     @apply pointer-events-none absolute left-1/2 top-1/2;
     z-index: -20;
     translate: -50% -50%;
+    /* Hidden until sized: resizing a visible canvas counts as a layout shift. */
+    visibility: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -589,6 +625,113 @@
       background-color: hsl(var(--ink) / 0.86);
       -webkit-backdrop-filter: blur(18px) saturate(150%);
       backdrop-filter: blur(18px) saturate(150%);
+    }
+  }
+
+  /* The mobile menu has to show every link, the quote button and the Instagram
+     handle without scrolling, on any phone and with the browser's toolbars
+     showing. So its sizes follow the visible height (dvh, with vh for older
+     browsers) and the rows share out whatever room is left.
+
+     The top padding clears the floating bar. The bottom padding clears the
+     WhatsApp button, which would otherwise cover the handle on narrow phones.
+
+     overflow-x rides along with overflow-y because a single `auto` axis makes
+     the other compute to `auto` too, and the sparked button's oversized canvas
+     would then add a sideways scrollbar. Scrolling remains only as a fallback
+     for screens too small to fit everything at the minimum sizes. */
+  .menu-scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: calc(4.75rem + env(safe-area-inset-top));
+    padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .menu-scroll {
+      padding-top: calc(5.75rem + env(safe-area-inset-top));
+    }
+  }
+
+  /* Grows rather than centring on the scroller: a centred column taller than
+     its box overflows both ends, and the top overflow cannot be scrolled back
+     to. Once the rows hit their max-height the spare room is split evenly.
+
+     overflow-y: clip stops the sparked button's oversized canvas from counting
+     as scrollable height, which would make a menu that fits scroll anyway. The
+     bottom padding moves that clip edge clear of the button's glow. */
+  .menu-body {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: clip;
+    padding-bottom: 1.5rem;
+  }
+
+  .menu-links {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    max-height: 30rem;
+  }
+
+  .menu-link {
+    @apply flex items-center border-b border-gold/20 font-serif text-ivory transition-colors duration-300 hover:text-gold;
+    flex: 1 0 auto;
+    padding-block: 0.3rem;
+    font-size: clamp(1.125rem, 4.2vh, 2.25rem);
+    font-size: clamp(1.125rem, 4.2dvh, 2.25rem);
+    line-height: 1.2;
+  }
+
+  .menu-actions {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 2.5vh, 1.75rem);
+    gap: clamp(0.5rem, 2.5dvh, 1.75rem);
+    margin-top: clamp(0.625rem, 3vh, 2.25rem);
+    margin-top: clamp(0.625rem, 3dvh, 2.25rem);
+  }
+
+  /* A phone on its side has no height for six stacked rows, so the links fold
+     into two columns and the actions share one line. */
+  @media (orientation: landscape) and (max-height: 480px) {
+    .menu-scroll {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .menu-links {
+      display: grid;
+      flex: 0 0 auto;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(3, auto);
+      grid-auto-columns: 1fr;
+      column-gap: 2.5rem;
+    }
+
+    .menu-link {
+      padding-block: 0.3rem;
+      font-size: 1.25rem;
+    }
+
+    .menu-actions {
+      flex-flow: row wrap;
+      align-items: center;
+      gap: 0.5rem 1.5rem;
+    }
+  }
+
+  /* Too narrow for the actions to clear the WhatsApp button sideways. */
+  @media (orientation: landscape) and (max-height: 480px) and (max-width: 639px) {
+    .menu-scroll {
+      padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
     }
   }
 
@@ -876,21 +1019,92 @@
   }
 }
 
-@keyframes gold-drift {
-  0% {
-    background-position: 0% 50%;
+/* backwards, not both: a held final frame would override the hover transform. */
+.whatsapp-fab {
+  animation: fab-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.4s backwards;
+  transition: transform 0.2s ease-out;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.06);
+}
+
+.whatsapp-fab:active {
+  transform: scale(0.96);
+}
+
+@keyframes fab-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
-  100% {
-    background-position: 100% 50%;
+}
+
+/* The opening curtain. CSS rather than GSAP so it exists from the first paint:
+   the panels are in the static HTML, and nothing has to load for them to part.
+   The panels stay in place for the first frames via the fill mode. */
+.curtain-panel {
+  animation: curtain-left 1.6s cubic-bezier(0.83, 0, 0.17, 1) 0.25s both;
+}
+
+.curtain-panel:last-child {
+  animation-name: curtain-right;
+}
+
+.no-intro .curtain {
+  display: none;
+}
+
+@keyframes curtain-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes curtain-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* The hero photo's slow settle. Sits on the <picture> so it cannot collide with
+   the parallax GSAP writes to the <img>. Under the curtain it waits, so the
+   reveal lands on an image already in motion. */
+.hero-photo {
+  animation: hero-settle 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+}
+
+.no-intro .hero-photo {
+  animation-delay: 0s;
+}
+
+@keyframes hero-settle {
+  from {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes gold-drift {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   /* Nothing drifts, pulses or waits to be scrolled into view. GSAP bails out
      on its own (see lib/gsap.ts); this covers the purely CSS motion. */
-  .gold-text-sheen,
-  .gold-glow {
+  .gold-glow,
+  .hero-photo,
+  .whatsapp-fab {
     animation: none !important;
+  }
+
+  .curtain,
+  .gold-text-sheen::after {
+    display: none;
   }
 
   *,

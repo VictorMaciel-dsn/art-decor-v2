@@ -24,11 +24,11 @@ const Arrow = () => (
 );
 
 const projects = [
-  { image: p1, imageUrl: p1Url, meta: p1Meta, room: "Sala de estar", solution: "Cortina com trilho embutido em gesso", span: "lg:col-span-7", sizes: "(min-width: 1024px) 56vw, (min-width: 640px) 50vw, 100vw" },
-  { image: p2, imageUrl: p2Url, meta: p2Meta, room: "Home office", solution: "Persiana rolô com tela solar", span: "lg:col-span-5", sizes: "(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw" },
-  { image: p3, imageUrl: p3Url, meta: p3Meta, room: "Quarto de casal", solution: "Cortina com bandô reto e blackout", span: "lg:col-span-5", sizes: "(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw" },
-  { image: p4, imageUrl: p4Url, meta: p4Meta, room: "Sala de jantar", solution: "Persiana painel em tecido translúcido", span: "lg:col-span-7", sizes: "(min-width: 1024px) 56vw, (min-width: 640px) 50vw, 100vw" },
-  { image: p5, imageUrl: p5Url, meta: p5Meta, room: "Living integrado", solution: "Cortina wave em linho natural", span: "lg:col-span-12", sizes: "100vw" },
+  { image: p1, imageUrl: p1Url, meta: p1Meta, room: "Sala de estar", solution: "Cortina com trilho embutido em gesso", span: "lg:col-span-7", sizes: "(min-width: 1024px) 52vw, (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)" },
+  { image: p2, imageUrl: p2Url, meta: p2Meta, room: "Home office", solution: "Persiana rolô com tela solar", span: "lg:col-span-5", sizes: "(min-width: 1024px) 37vw, (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)" },
+  { image: p3, imageUrl: p3Url, meta: p3Meta, room: "Quarto de casal", solution: "Cortina com bandô reto e blackout", span: "lg:col-span-5", sizes: "(min-width: 1024px) 37vw, (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)" },
+  { image: p4, imageUrl: p4Url, meta: p4Meta, room: "Sala de jantar", solution: "Persiana painel em tecido translúcido", span: "lg:col-span-7", sizes: "(min-width: 1024px) 52vw, (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)" },
+  { image: p5, imageUrl: p5Url, meta: p5Meta, room: "Living integrado", solution: "Cortina wave em linho natural", span: "lg:col-span-12", sizes: "(min-width: 1024px) 90vw, (min-width: 640px) calc(100vw - 80px), calc(100vw - 48px)" },
 ];
 
 const Projects = () => (

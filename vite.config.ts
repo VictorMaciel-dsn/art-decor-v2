@@ -1,7 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { imagetools } from "vite-imagetools";
+import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
+
+const PHOTO_QUALITY = "75";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
@@ -14,6 +17,8 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
+    // `ANALYZE=1 npx vite build` writes the bundle treemap to stats.html.
+    process.env.ANALYZE ? visualizer({ filename: "stats.html", gzipSize: true }) : null,
     // Photos are resized and converted to WebP at import time, so replacing a
     // file in src/assets/img is all it takes — no build step to remember.
     // A plain `?w=900&format=webp` import returns the URL; add `&srcset` to
@@ -34,7 +39,7 @@ export default defineConfig(() => ({
         if (url.searchParams.get("as") === "url") {
           return new URLSearchParams({
             format: "webp",
-            quality: "90",
+            quality: PHOTO_QUALITY,
             w: "1280",
             withoutEnlargement: "true",
           });
@@ -42,8 +47,8 @@ export default defineConfig(() => ({
 
         return new URLSearchParams({
           format: "webp",
-          quality: "90",
-          w: "540;760;1080;1280;1520;1920;2560",
+          quality: PHOTO_QUALITY,
+          w: "400;540;760;1080;1280;1520;1920",
           withoutEnlargement: "true",
           as: "srcset",
         });

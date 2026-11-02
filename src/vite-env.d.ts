@@ -18,6 +18,12 @@ declare module "*&as=url" {
   export default src;
 }
 
+// And a chain ending in `as=srcset` is a srcset string.
+declare module "*&as=srcset" {
+  const srcset: string;
+  export default srcset;
+}
+
 // `?meta` yields the source's intrinsic dimensions, so a layout can follow the
 // photo's real shape instead of a hard-coded aspect ratio.
 declare module "*?meta" {
