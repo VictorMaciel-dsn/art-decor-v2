@@ -157,7 +157,7 @@ const Footer = () => {
         </div>
       </Reveal>
 
-      <div className="mt-20 flex flex-col justify-between gap-3 border-t border-gold/15 pt-8 text-[0.6875rem] uppercase tracking-[0.16em] text-ivory/40 sm:flex-row">
+      <div className="mt-20 flex flex-col justify-between gap-3 border-t border-gold/15 pt-8 text-[0.6875rem] uppercase tracking-[0.16em] text-ivory/50 sm:flex-row">
         <p>© {new Date().getFullYear()} Art Decor</p>
         <p>Teresópolis — RJ, Brasil</p>
       </div>
