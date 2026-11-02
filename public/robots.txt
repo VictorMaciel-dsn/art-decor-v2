@@ -1,14 +1,26 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# Art Decor de Teresópolis — https://artdecordeteresopolis.com
+# Todo o site é público e pode ser rastreado e indexado.
 
 User-agent: *
 Allow: /
+
+# Buscadores e assistentes de IA são bem-vindos (lista explícita apenas
+# para deixar a intenção clara; a regra acima já os cobre).
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Bingbot
+User-agent: DuckDuckBot
+User-agent: Applebot
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://artdecordeteresopolis.com/sitemap.xml

@@ -1,0 +1,39 @@
+# Art Decor de Teresópolis
+
+> Loja especializada em cortinas, persianas e automação sob medida em Teresópolis (RJ), atendendo Teresópolis e a Região Serrana do Rio de Janeiro desde 1981 — 45 anos de tradição. Faz visita técnica, curadoria de tecidos e mecanismos, confecção sob medida e instalação com equipe própria, para residências e espaços comerciais.
+
+Informações essenciais:
+
+- Nome: Art Decor de Teresópolis (também conhecida como "Art Decor" e "Art Decor por Luiz")
+- Fundação: 1981
+- Endereço: Av. Lúcio Meira, 551 — Várzea, Teresópolis — RJ, Brasil
+- WhatsApp (orçamentos): +55 21 98321-6443 — https://wa.me/5521983216443
+- Telefone: +55 21 2642-1389
+- Instagram: @artdecorteresopolis — https://www.instagram.com/artdecorteresopolis/
+- Site oficial: https://artdecordeteresopolis.com
+- Área atendida: Teresópolis e região (Região Serrana do Rio de Janeiro)
+- Idioma de atendimento: português
+
+Produtos e serviços:
+
+- Cortinas sob medida: prega macho, wave, ilhós, blackout, voil, linho, tecido forrado, bandô reto ou em curva, trilho embutido em gesso, trilho duplo.
+- Persianas sob medida: romana, rolô (tela solar, translúcida e blackout), double vision, vertical e painel.
+- Automação: cortinas e persianas motorizadas, controle remoto, cenários e horários, controle por aplicativo ou voz e integração com casa inteligente (smart home), instaladas e configuradas pela equipe.
+
+Como funciona o atendimento: 1) visita técnica para medir e observar a luz do ambiente; 2) curadoria de tecidos, mecanismos e acabamentos; 3) produção sob medida com ajuste de caimento e proporção; 4) instalação e revisão de cada detalhe. Orçamentos são solicitados pelo WhatsApp.
+
+## Páginas
+
+- [Início](https://artdecordeteresopolis.com/): apresentação da empresa, história desde 1981, coleções (cortinas, persianas, automação), projetos em destaque, diferenciais, processo de trabalho, depoimentos e contato.
+- [Projetos](https://artdecordeteresopolis.com/projetos): galeria de projetos entregues em Teresópolis e região, organizada por coleção — cortinas, persianas e automação.
+
+## Contato
+
+- [Solicitar orçamento pelo WhatsApp](https://wa.me/5521983216443): canal principal de atendimento e orçamentos.
+- [Instagram @artdecorteresopolis](https://www.instagram.com/artdecorteresopolis/): portfólio atualizado com projetos recentes.
+- [Como chegar (Google Maps)](https://maps.google.com/?q=Av.+L%C3%BAcio+Meira,+551+-+V%C3%A1rzea,+Teres%C3%B3polis+-+RJ): Av. Lúcio Meira, 551 — Várzea, Teresópolis — RJ.
+
+## Optional
+
+- [Conteúdo completo do site em texto](https://artdecordeteresopolis.com/llms-full.txt): todo o texto das páginas em um único arquivo, para leitura por assistentes de IA.
+- [Sitemap](https://artdecordeteresopolis.com/sitemap.xml): lista de páginas e imagens do site.

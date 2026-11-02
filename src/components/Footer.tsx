@@ -28,7 +28,7 @@ const sealSet = [
   .join(", ");
 
 const WHATSAPP = "https://wa.me/5521983216443";
-const INSTAGRAM = "https://instagram.com/artdecorteresopolis";
+const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
 const MAPS = "https://maps.google.com/?q=Av.+Lúcio+Meira,+551+-+Várzea,+Teresópolis+-+RJ";
 
 const nav = [
@@ -106,48 +106,53 @@ const Footer = () => {
             <p className="text-[0.6875rem] uppercase tracking-[0.2em] text-gold/70">
               Contato
             </p>
-            <ul className="mt-6 space-y-3 text-sm font-light text-ivory/75">
-              <li>
-                <a
-                  href={WHATSAPP}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors duration-300 hover:text-gold"
-                >
-                  WhatsApp · (21) 98321-6443
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+552126421389"
-                  className="transition-colors duration-300 hover:text-gold"
-                >
-                  Telefone · (21) 2642-1389
-                </a>
-              </li>
-              <li>
-                <a
-                  href={INSTAGRAM}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors duration-300 hover:text-gold"
-                >
-                  Instagram · @artdecorteresopolis
-                </a>
-              </li>
-              <li className="pt-3">
-                <a
-                  href={MAPS}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="leading-relaxed transition-colors duration-300 hover:text-gold"
-                >
-                  Av. Lúcio Meira, 551 — Várzea
-                  <br />
-                  Teresópolis — RJ
-                </a>
-              </li>
-            </ul>
+            {/* <address> marks this as the business's own contact block
+                (name/address/phone that search engines match against the
+                Google Business Profile). not-italic undoes its UA style. */}
+            <address className="not-italic">
+              <ul className="mt-6 space-y-3 text-sm font-light text-ivory/75">
+                <li>
+                  <a
+                    href={WHATSAPP}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors duration-300 hover:text-gold"
+                  >
+                    WhatsApp · (21) 98321-6443
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="tel:+552126421389"
+                    className="transition-colors duration-300 hover:text-gold"
+                  >
+                    Telefone · (21) 2642-1389
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={INSTAGRAM}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors duration-300 hover:text-gold"
+                  >
+                    Instagram · @artdecorteresopolis
+                  </a>
+                </li>
+                <li className="pt-3">
+                  <a
+                    href={MAPS}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="leading-relaxed transition-colors duration-300 hover:text-gold"
+                  >
+                    Av. Lúcio Meira, 551 — Várzea
+                    <br />
+                    Teresópolis — RJ
+                  </a>
+                </li>
+              </ul>
+            </address>
           </div>
         </div>
       </Reveal>

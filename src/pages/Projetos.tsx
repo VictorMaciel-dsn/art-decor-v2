@@ -10,6 +10,8 @@ import SplitReveal from "@/components/SplitReveal";
 import CTA from "@/components/CTA";
 import { useLenis, getLenis, scrollToAnchor } from "@/hooks/useLenis";
 import { gallery, CATEGORIES } from "@/data/gallery";
+import { useSeo } from "@/hooks/useSeo";
+import { ROUTES } from "@/lib/seo";
 
 /**
  * The full gallery, split into one section per collection so a "Conhecer
@@ -23,6 +25,7 @@ import { gallery, CATEGORIES } from "@/data/gallery";
  */
 const Projetos = () => {
   useLenis();
+  useSeo(ROUTES.projetos);
   const { hash, state } = useLocation();
 
   // Two ways in: a #hash in the URL, or router state from a Link that did

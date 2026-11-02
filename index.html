@@ -1,25 +1,66 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0B0B0B" />
-    <link rel="icon" type="image/jpeg" href="/src/assets/logos/art-decor-rd.jpeg" />
-    <link rel="apple-touch-icon" href="/src/assets/logos/art-decor-rd.jpeg" />
-    <title>Art Decor | Cortinas e Persianas Premium em Teresópolis</title>
-    <meta name="description" content="Art Decor - 45 anos de tradição em cortinas e persianas sob medida em Teresópolis e região. Qualidade premium, orçamento gratuito e instalação profissional." />
-    <meta name="author" content="Art Decor" />
-    <meta name="keywords" content="cortinas, persianas, sob medida, Teresópolis, Rio de Janeiro, decoração, interiores" />
+    <meta name="format-detection" content="telephone=no" />
 
-    <meta property="og:title" content="Art Decor | Cortinas e Persianas Premium" />
-    <meta property="og:description" content="Transforme seu ambiente com elegância. 45 anos de tradição em cortinas e persianas sob medida." />
+    <!-- Fonts the first screen needs, fetched in parallel with the CSS
+         instead of after it. Same files src/index.css declares. -->
+    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- seo:start — per-route tags. scripts/prerender.mjs rewrites this
+         block for every page at build time (values from src/lib/seo.ts);
+         what is here is the home page, used by the dev server. -->
+    <title>Art Decor de Teresópolis | Cortinas e Persianas sob Medida</title>
+    <meta name="description" content="Cortinas, persianas e automação sob medida em Teresópolis e região há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento." />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://artdecordeteresopolis.com/" />
+    <meta property="og:title" content="Art Decor de Teresópolis | Cortinas e Persianas sob Medida" />
+    <meta property="og:description" content="Cortinas, persianas e automação sob medida em Teresópolis e região há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento." />
+    <meta property="og:url" content="https://artdecordeteresopolis.com/" />
+    <meta name="twitter:title" content="Art Decor de Teresópolis | Cortinas e Persianas sob Medida" />
+    <meta name="twitter:description" content="Cortinas, persianas e automação sob medida em Teresópolis e região há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento." />
+    <!-- seo:end -->
+
+    <meta name="author" content="Art Decor de Teresópolis" />
+    <meta name="keywords" content="cortinas Teresópolis, persianas Teresópolis, cortinas sob medida, persianas sob medida, cortina blackout, cortina de voil, persiana rolô, persiana double vision, cortina motorizada, automação de cortinas, Região Serrana RJ, Art Decor" />
+    <meta name="geo.region" content="BR-RJ" />
+    <meta name="geo.placename" content="Teresópolis" />
+
     <meta property="og:type" content="website" />
-    
-    <link rel="canonical" href="https://artdecor.com.br" />
+    <meta property="og:site_name" content="Art Decor de Teresópolis" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content="https://artdecordeteresopolis.com/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://artdecordeteresopolis.com/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Art Decor de Teresópolis — cortinas e persianas sob medida" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://artdecordeteresopolis.com/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Art Decor de Teresópolis — cortinas e persianas sob medida" />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Art Decor" />
+    <link rel="alternate" type="text/plain" title="Resumo para IAs (llms.txt)" href="/llms.txt" />
+
+    <!-- Each page is shipped pre-rendered (scripts/prerender.mjs) so its
+         text is in the source for crawlers. The live app mounts over it a
+         moment later; until then the static copy is held invisible so the
+         intro and reveal animations still start from a clean frame. -->
+    <style>.prerender{opacity:0}</style>
+    <noscript><style>.prerender{opacity:1}</style></noscript>
   </head>
 
   <body style="background-color: #0B0B0B">
-    <div id="root"></div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

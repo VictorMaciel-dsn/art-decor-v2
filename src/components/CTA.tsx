@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Instagram } from "lucide-react";
 import { gsap, useGSAP, EASE, reduceMotion, MOBILE_BREAKPOINT } from "@/lib/gsap";
 import SplitReveal from "./SplitReveal";
 import Button from "./Button";
@@ -9,6 +10,7 @@ import ctaImageUrl from "@/assets/img/cortina_pregaMacho2.png?hq&as=url";
 import ctaMobile from "@/assets/img/cortina_pregaMacho2-mobile.png?hq";
 
 const WHATSAPP = "https://wa.me/5521983216443";
+const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
 
 const CTA = () => {
   const root = useRef<HTMLElement>(null);
@@ -106,6 +108,19 @@ const CTA = () => {
           Solicitar orçamento
         </Button>
       </div>
+
+      {/* The second way in, for visitors not ready to ask for a quote yet:
+          the portfolio keeps growing on Instagram between site updates. */}
+      <a
+        data-cta-fade
+        href={INSTAGRAM}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="link-line mt-10 self-start text-gold hover:text-gold-light"
+      >
+        <Instagram strokeWidth={1.25} className="h-4 w-4 shrink-0" />
+        Siga @artdecorteresopolis no Instagram
+      </a>
     </div>
   </section>
   );

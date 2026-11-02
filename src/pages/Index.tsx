@@ -12,9 +12,12 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { useLenis, scrollToAnchor } from "@/hooks/useLenis";
+import { useSeo } from "@/hooks/useSeo";
+import { ROUTES } from "@/lib/seo";
 
 const Index = () => {
   useLenis();
+  useSeo(ROUTES.home);
   const { state } = useLocation();
   const anchor = (state as { anchor?: string } | null)?.anchor;
 

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Instagram } from "lucide-react";
 import { gsap, useGSAP, reduceMotion } from "@/lib/gsap";
 import Logo from "./Logo";
 import Button from "./Button";
 import { scrollToAnchor } from "@/hooks/useLenis";
 
 const WHATSAPP = "https://wa.me/5521983216443";
+const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
 
 const links = [
   { label: "Projetos", href: "#projetos" },
@@ -16,8 +18,8 @@ const links = [
   { label: "Contato", href: "#contato" },
 ];
 
-const Arrow = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className="h-3.5 w-3.5">
+const Arrow = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className={`h-3.5 w-3.5 ${className}`}>
     <path d="M4 12h15M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
@@ -148,56 +150,85 @@ const Header = () => {
               />
             </a>
 
-            <nav className="hidden items-center gap-9 lg:flex">
+            {/* Tighter below xl: at 1024px the full gap-9 row does not fit
+                beside the logo and the actions ("Sobre nós" used to wrap
+                and the logo ran into the first link). */}
+            <nav className="hidden items-center gap-4 lg:flex xl:gap-9">
               {links.map((l) => (
                 <a
                   key={l.href}
                   href={l.href}
                   onClick={(e) => go(e, l.href)}
-                  className="link-line font-light text-ivory/70 hover:text-gold"
+                  className="link-line whitespace-nowrap font-light text-ivory/70 hover:text-gold"
                 >
                   {l.label}
                 </a>
               ))}
             </nav>
 
-            <a
-              href={WHATSAPP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-cta hidden lg:inline-flex"
-            >
-              Solicitar orçamento
-              <Arrow />
-            </a>
+            <div className="hidden items-center gap-3 lg:flex xl:gap-4">
+              <a
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram da Art Decor (@artdecorteresopolis)"
+                title="@artdecorteresopolis no Instagram"
+                className="nav-icon"
+              >
+                <Instagram strokeWidth={1.25} className="h-[18px] w-[18px]" />
+              </a>
+              <a
+                href={WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-cta"
+              >
+                Solicitar orçamento
+                {/* Dropped below xl for the same lack of room. */}
+                <Arrow className="hidden xl:block" />
+              </a>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-label={open ? "Fechar menu" : "Abrir menu"}
-              aria-expanded={open}
-              className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] text-gold lg:hidden"
-            >
-              {/* Three bars that fold into an X: the outer two travel to
-                  the middle and cross, while the middle one fades out
-                  under them. The 6px offsets match the gap-[5px] plus the
-                  1px rule, so the two arms meet exactly on centre. */}
-              <span
-                className={`block h-px w-6 bg-current transition-transform duration-400 ${
-                  open ? "translate-y-[6px] rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`block h-px w-6 bg-current transition-opacity duration-300 ${
-                  open ? "opacity-0" : "opacity-100"
-                }`}
-              />
-              <span
-                className={`block h-px w-6 bg-current transition-transform duration-400 ${
-                  open ? "-translate-y-[6px] -rotate-45" : ""
-                }`}
-              />
-            </button>
+            {/* On phones the Instagram link sits beside the menu toggle, so
+                it is one tap away without opening the overlay. */}
+            <div className="flex items-center gap-1 lg:hidden">
+              <a
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram da Art Decor (@artdecorteresopolis)"
+                className="flex h-10 w-10 items-center justify-center text-gold transition-colors duration-300 hover:text-gold-light"
+              >
+                <Instagram strokeWidth={1.25} className="h-5 w-5" />
+              </a>
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-label={open ? "Fechar menu" : "Abrir menu"}
+                aria-expanded={open}
+                className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] text-gold"
+              >
+                {/* Three bars that fold into an X: the outer two travel to
+                    the middle and cross, while the middle one fades out
+                    under them. The 6px offsets match the gap-[5px] plus the
+                    1px rule, so the two arms meet exactly on centre. */}
+                <span
+                  className={`block h-px w-6 bg-current transition-transform duration-400 ${
+                    open ? "translate-y-[6px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-px w-6 bg-current transition-opacity duration-300 ${
+                    open ? "opacity-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  className={`block h-px w-6 bg-current transition-transform duration-400 ${
+                    open ? "-translate-y-[6px] -rotate-45" : ""
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -241,6 +272,16 @@ const Header = () => {
                 Solicitar orçamento
               </Button>
             </div>
+            <a
+              data-mobile-item
+              href={INSTAGRAM}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-3 self-start text-sm font-medium uppercase tracking-[0.14em] text-gold transition-colors duration-300 hover:text-gold-light"
+            >
+              <Instagram strokeWidth={1.25} className="h-5 w-5" />
+              @artdecorteresopolis
+            </a>
           </div>
         </nav>
       </div>
