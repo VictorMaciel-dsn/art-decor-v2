@@ -98,6 +98,7 @@ const run = (
       cv.height = Math.round(cssHeight * dpr);
       cv.style.width = `${cssWidth}px`;
       cv.style.height = `${cssHeight}px`;
+      cv.style.visibility = "visible";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     });
   };

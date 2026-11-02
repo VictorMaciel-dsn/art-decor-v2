@@ -538,6 +538,8 @@
     @apply pointer-events-none absolute left-1/2 top-1/2;
     z-index: -20;
     translate: -50% -50%;
+    /* Hidden until sized: resizing a visible canvas counts as a layout shift. */
+    visibility: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {
