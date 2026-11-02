@@ -592,6 +592,113 @@
     }
   }
 
+  /* The mobile menu has to show every link, the quote button and the Instagram
+     handle without scrolling, on any phone and with the browser's toolbars
+     showing. So its sizes follow the visible height (dvh, with vh for older
+     browsers) and the rows share out whatever room is left.
+
+     The top padding clears the floating bar. The bottom padding clears the
+     WhatsApp button, which would otherwise cover the handle on narrow phones.
+
+     overflow-x rides along with overflow-y because a single `auto` axis makes
+     the other compute to `auto` too, and the sparked button's oversized canvas
+     would then add a sideways scrollbar. Scrolling remains only as a fallback
+     for screens too small to fit everything at the minimum sizes. */
+  .menu-scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: calc(4.75rem + env(safe-area-inset-top));
+    padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .menu-scroll {
+      padding-top: calc(5.75rem + env(safe-area-inset-top));
+    }
+  }
+
+  /* Grows rather than centring on the scroller: a centred column taller than
+     its box overflows both ends, and the top overflow cannot be scrolled back
+     to. Once the rows hit their max-height the spare room is split evenly.
+
+     overflow-y: clip stops the sparked button's oversized canvas from counting
+     as scrollable height, which would make a menu that fits scroll anyway. The
+     bottom padding moves that clip edge clear of the button's glow. */
+  .menu-body {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: clip;
+    padding-bottom: 1.5rem;
+  }
+
+  .menu-links {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    max-height: 30rem;
+  }
+
+  .menu-link {
+    @apply flex items-center border-b border-gold/20 font-serif text-ivory transition-colors duration-300 hover:text-gold;
+    flex: 1 0 auto;
+    padding-block: 0.3rem;
+    font-size: clamp(1.125rem, 4.2vh, 2.25rem);
+    font-size: clamp(1.125rem, 4.2dvh, 2.25rem);
+    line-height: 1.2;
+  }
+
+  .menu-actions {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 2.5vh, 1.75rem);
+    gap: clamp(0.5rem, 2.5dvh, 1.75rem);
+    margin-top: clamp(0.625rem, 3vh, 2.25rem);
+    margin-top: clamp(0.625rem, 3dvh, 2.25rem);
+  }
+
+  /* A phone on its side has no height for six stacked rows, so the links fold
+     into two columns and the actions share one line. */
+  @media (orientation: landscape) and (max-height: 480px) {
+    .menu-scroll {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .menu-links {
+      display: grid;
+      flex: 0 0 auto;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(3, auto);
+      grid-auto-columns: 1fr;
+      column-gap: 2.5rem;
+    }
+
+    .menu-link {
+      padding-block: 0.3rem;
+      font-size: 1.25rem;
+    }
+
+    .menu-actions {
+      flex-flow: row wrap;
+      align-items: center;
+      gap: 0.5rem 1.5rem;
+    }
+  }
+
+  /* Too narrow for the actions to clear the WhatsApp button sideways. */
+  @media (orientation: landscape) and (max-height: 480px) and (max-width: 639px) {
+    .menu-scroll {
+      padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+    }
+  }
+
   /* The navbar's quote button. Same corner radius and type as the hero
      buttons, but compact enough to sit inside a 56px bar. It reads as an
      outline chip at rest and fills with the hero's gold on hover. */

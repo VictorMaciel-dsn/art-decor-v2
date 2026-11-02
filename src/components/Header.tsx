@@ -4,7 +4,7 @@ import { Instagram } from "lucide-react";
 import { gsap, useGSAP, reduceMotion } from "@/lib/gsap";
 import Logo from "./Logo";
 import Button from "./Button";
-import { scrollToAnchor } from "@/hooks/useLenis";
+import { getLenis, scrollToAnchor } from "@/hooks/useLenis";
 
 const WHATSAPP = "https://wa.me/5521983216443";
 const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
@@ -31,6 +31,7 @@ const Header = () => {
   const { pathname } = useLocation();
   const root = useRef<HTMLElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+  const menu = useRef<HTMLElement>(null);
 
   // The bar stays put at all times; the only thing scroll drives is whether
   // it is the transparent strip over the hero or the floating glass island.
@@ -51,11 +52,56 @@ const Header = () => {
     };
   }, []);
 
-  // The overlay owns the scroll lock. Lenis keeps running underneath otherwise.
+  // The overlay owns the scroll lock, and it takes three layers: Lenis scrolls
+  // programmatically, so overflow:hidden does not stop it; iOS Safari can still
+  // pan the page through overflow:hidden, so touch has to be cancelled as well.
+  // position:fixed on the body is avoided because it zeroes window.scrollY,
+  // which would rewind every ScrollTrigger under the overlay.
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+
+    const { documentElement: html, body } = document;
+    const lenis = getLenis();
+    lenis?.stop();
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+
+    let lastY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      lastY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 1) return; // leave pinch-zoom alone
+      const y = e.touches[0].clientY;
+      const delta = lastY - y;
+      lastY = y;
+
+      // Only a menu too tall for the screen may pan, and only while it has
+      // room left in that direction, or the gesture chains to the page.
+      const nav = menu.current;
+      const pansMenu =
+        nav?.contains(e.target as Node) &&
+        (delta > 0 ? nav.scrollTop + nav.clientHeight < nav.scrollHeight - 1 : nav.scrollTop > 0);
+      if (!pansMenu && e.cancelable) e.preventDefault();
+    };
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    // The toggle is hidden from lg up, so a menu left open across that
+    // breakpoint would hold the lock with no way to release it.
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const onBreakpoint = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+    desktop.addEventListener("change", onBreakpoint);
+
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove", onTouchMove);
+      desktop.removeEventListener("change", onBreakpoint);
+      html.style.overflow = "";
+      body.style.overflow = "";
+      lenis?.start();
     };
   }, [open]);
 
@@ -98,6 +144,9 @@ const Header = () => {
       navigate("/", { state: { anchor: href } });
       return;
     }
+    // A stopped Lenis ignores scrollTo, and the lock only lifts after this
+    // render commits, so it has to be released here first.
+    getLenis()?.start();
     scrollToAnchor(href);
   };
 
@@ -117,7 +166,7 @@ const Header = () => {
         <div
           aria-hidden="true"
           className={`pointer-events-none absolute inset-x-0 top-0 -z-10 h-[calc(100%+2.5rem)] bg-[linear-gradient(to_bottom,hsl(var(--ink))_0%,hsl(var(--ink))_62%,hsl(var(--ink)/0.75)_80%,transparent_100%)] transition-opacity duration-500 ${
-            scrolled || open ? "opacity-100" : "opacity-0"
+            scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
         />
 
@@ -133,7 +182,7 @@ const Header = () => {
         >
           <div
             className={`flex items-center justify-between transition-[height] duration-600 ease-lux ${
-              scrolled ? "h-14 md:h-16" : "h-20 md:h-24"
+              scrolled || open ? "h-14 md:h-16" : "h-20 md:h-24"
             }`}
           >
             <a
@@ -145,7 +194,7 @@ const Header = () => {
               <Logo
                 sheen
                 className={`transition-all duration-500 ${
-                  scrolled ? "text-xl" : "text-2xl md:text-[1.75rem]"
+                  scrolled || open ? "text-xl" : "text-2xl md:text-[1.75rem]"
                 }`}
               />
             </a>
@@ -240,48 +289,40 @@ const Header = () => {
         // scrollbar inside the open menu.
         className="invisible fixed inset-0 z-40 overflow-hidden bg-ink opacity-0 lg:hidden"
       >
-        {/* The bar floats over this panel, so the list reserves room for
-            it at the top (pt-28).
-
-            justify-start + an auto block margin on the list, rather than
-            justify-center: a centred flex column whose content is taller
-            than the box overflows BOTH ends, and the top overflow cannot
-            be scrolled back to — which is what buried the first item
-            under the logo. With auto margins the list is centred only
-            while it fits, and otherwise sits against the top padding.
-
-            overflow-x-hidden rides along with overflow-y-auto because a
-            single `auto` axis makes the other compute to `auto` too, and
-            the sparked button's oversized canvas would then add a
-            sideways scrollbar. */}
-        <nav className="shell flex h-full flex-col justify-start gap-1 overflow-y-auto overflow-x-hidden pb-16 pt-28">
-          <div className="my-auto flex flex-col gap-1">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                data-mobile-item
-                href={l.href}
-                onClick={(e) => go(e, l.href)}
-                className="border-b border-gold/20 py-4 font-serif text-[1.75rem] text-ivory transition-colors duration-300 hover:text-gold sm:py-5 sm:text-4xl"
-              >
-                {l.label}
-              </a>
-            ))}
-            <div data-mobile-item className="mt-9 self-start">
-              <Button href={WHATSAPP} spark external magnetic={false}>
-                Solicitar orçamento
-              </Button>
+        {/* data-lenis-prevent: a stopped Lenis cancels every wheel event it
+            sees, which would also block the menu's own scrolling fallback. */}
+        <nav ref={menu} data-lenis-prevent className="menu-scroll shell">
+          <div className="menu-body">
+            <div className="menu-links">
+              {links.map((l) => (
+                <a
+                  key={l.href}
+                  data-mobile-item
+                  href={l.href}
+                  onClick={(e) => go(e, l.href)}
+                  className="menu-link"
+                >
+                  {l.label}
+                </a>
+              ))}
             </div>
-            <a
-              data-mobile-item
-              href={INSTAGRAM}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-3 self-start text-sm font-medium uppercase tracking-[0.14em] text-gold transition-colors duration-300 hover:text-gold-light"
-            >
-              <Instagram strokeWidth={1.25} className="h-5 w-5" />
-              @artdecorteresopolis
-            </a>
+            <div className="menu-actions">
+              <div data-mobile-item>
+                <Button href={WHATSAPP} spark external magnetic={false}>
+                  Solicitar orçamento
+                </Button>
+              </div>
+              <a
+                data-mobile-item
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 text-sm font-medium uppercase tracking-[0.14em] text-gold transition-colors duration-300 hover:text-gold-light"
+              >
+                <Instagram strokeWidth={1.25} className="h-5 w-5 shrink-0" />
+                @artdecorteresopolis
+              </a>
+            </div>
           </div>
         </nav>
       </div>
