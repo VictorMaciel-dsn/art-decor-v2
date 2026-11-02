@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components -- loaded through React.lazy, never hot-swapped on its own */
 import { useEffect } from "react";
 import { ScrollTrigger } from "@/lib/gsap";
 import About from "./About";

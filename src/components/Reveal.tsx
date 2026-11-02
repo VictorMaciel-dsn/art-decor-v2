@@ -41,7 +41,6 @@ const Reveal = ({ children, delay = 0, y = 24, className }: Props) => {
     observer.observe(el);
     return () => observer.disconnect();
     // Runs once: a re-render must not re-hide content already shown.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
