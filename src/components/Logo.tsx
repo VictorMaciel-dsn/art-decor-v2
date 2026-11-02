@@ -11,6 +11,7 @@ type Props = {
 const Logo = ({ className = "", sheen = false }: Props) => (
   <span className={`inline-flex flex-col items-center leading-none ${className}`}>
     <span
+      data-sheen={sheen ? "ART DECOR" : undefined}
       className={`gold-text gold-text-bright font-serif font-semibold tracking-[0.01em] ${
         sheen ? "gold-text-sheen" : ""
       }`}

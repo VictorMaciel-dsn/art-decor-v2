@@ -1,9 +1,9 @@
 /* Self-hosted webfonts (same families, weights and styles the Google Fonts
    link used to request). Served from our own origin they skip two extra
    connections and a render-blocking stylesheet, and the files get the
-   build's hashed, immutable caching. The latin files — everything Portuguese
-   needs — are preloaded from index.html; latin-ext only downloads if a page
-   ever uses a character from it. */
+   build's hashed, immutable caching. The H1's two latin files are preloaded
+   from index.html; latin-ext only downloads if a page ever uses a character
+   from it. */
 @font-face {
   font-family: 'Cormorant Garamond';
   font-style: normal;
@@ -290,8 +290,32 @@
     filter: drop-shadow(0 1px 0 hsl(var(--gold-deep) / 0.55));
   }
 
-  /* Same foil, but it drifts — for the hero and the wordmark */
+  /* Same foil, but it drifts — for the hero and the wordmark. Moving a gradient
+     clipped to text can only be done by repainting it, so the far end of the
+     drift is a second copy of the glyphs that fades in over the first. Opacity
+     runs on the compositor; the copy comes from data-sheen so it is not text
+     in the page. */
   .gold-text-sheen {
+    position: relative;
+    display: inline-block;
+  }
+
+  .gold-text-sheen::after {
+    content: attr(data-sheen);
+    content: attr(data-sheen) / "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-bottom: inherit;
+    white-space: nowrap;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    will-change: opacity;
     animation: gold-drift 7s ease-in-out infinite alternate;
   }
 
@@ -1022,14 +1046,12 @@
 @keyframes curtain-left {
   to {
     transform: translateX(-100%);
-    visibility: hidden;
   }
 }
 
 @keyframes curtain-right {
   to {
     transform: translateX(100%);
-    visibility: hidden;
   }
 }
 
@@ -1051,25 +1073,25 @@
 }
 
 @keyframes gold-drift {
-  0% {
-    background-position: 0% 50%;
+  from {
+    opacity: 0;
   }
-  100% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   /* Nothing drifts, pulses or waits to be scrolled into view. GSAP bails out
      on its own (see lib/gsap.ts); this covers the purely CSS motion. */
-  .gold-text-sheen,
   .gold-glow,
   .hero-photo,
   .whatsapp-fab {
     animation: none !important;
   }
 
-  .curtain {
+  .curtain,
+  .gold-text-sheen::after {
     display: none;
   }
 

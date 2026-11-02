@@ -113,7 +113,10 @@ const Hero = () => {
                   the nowrap stops it splitting if a narrow screen disagrees. */}
               O toque final
               <br />
-              <span className="gold-text gold-text-sheen whitespace-nowrap italic">
+              <span
+                data-sheen="da sua casa."
+                className="gold-text gold-text-sheen whitespace-nowrap italic"
+              >
                 da sua casa.
               </span>
             </h1>

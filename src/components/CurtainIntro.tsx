@@ -20,7 +20,7 @@ const CurtainIntro = () => {
   }, []);
 
   return (
-    <div aria-hidden="true" className="curtain pointer-events-none fixed inset-0 z-[90] flex">
+    <div aria-hidden="true" className="curtain pointer-events-none fixed inset-0 z-[90] flex overflow-hidden">
       {[0, 1].map((i) => (
         <div
           key={i}
