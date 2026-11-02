@@ -1,9 +1,7 @@
 import { useRef } from "react";
-import { gsap, useGSAP, EASE, reduceMotion, MOBILE_BREAKPOINT } from "@/lib/gsap";
-import SplitReveal from "./SplitReveal";
+import { gsap, useGSAP, reduceMotion, MOBILE_BREAKPOINT } from "@/lib/gsap";
 import Button from "./Button";
 import CurtainIntro from "./CurtainIntro";
-import { playsIntro } from "@/lib/intro";
 import { scrollToAnchor } from "@/hooks/useLenis";
 import heroImage from "@/assets/img/tela_capa.png?hq";
 import heroImageUrl from "@/assets/img/tela_capa.png?hq&as=url";
@@ -11,13 +9,13 @@ import heroImageUrl from "@/assets/img/tela_capa.png?hq&as=url";
 // phone screen with it meant cropping away most of the frame; this one is
 // composed for the format. <picture> picks one or the other, so only the
 // matching file is ever downloaded.
-import heroMobile from "@/assets/img/tela_mobile.png?hq";
+import heroMobile from "@/assets/img/tela_mobile.png?w=480;768;1024&format=webp&quality=72&as=srcset";
 
 const WHATSAPP = "https://wa.me/5521983216443";
 
-/** The curtain covers the first 1.85s; content starts as it clears. */
-const OPEN_AT = playsIntro ? 1.5 : 0.15;
-
+// This photo is the page's LCP and the copy is what it is read with, so none of
+// it may wait on JavaScript or start hidden. The only entrance motion left is
+// the photo settling (.hero-photo), and that is transform-only CSS.
 const Hero = () => {
   const root = useRef<HTMLElement>(null);
   const image = useRef<HTMLImageElement>(null);
@@ -25,39 +23,6 @@ const Hero = () => {
   useGSAP(
     () => {
       if (reduceMotion) return;
-
-      // Slow pull-back on the photo. Starts under the curtain so the reveal
-      // lands on an image already in motion rather than a still frame.
-      gsap.from(image.current, {
-        scale: 1.25,
-        duration: 2.6,
-        ease: EASE,
-        delay: playsIntro ? 0.9 : 0,
-      });
-
-      gsap
-        .timeline({ delay: OPEN_AT })
-        .from("[data-hero-rule]", {
-          scaleX: 0,
-          duration: 1.1,
-          ease: "power2.inOut",
-        })
-        .from(
-          "[data-hero-eyebrow]",
-          { opacity: 0, y: 12, duration: 0.8, ease: EASE },
-          "-=0.6",
-        )
-        // The headline runs itself (SplitReveal); these pick up after it.
-        .from(
-          "[data-hero-fade]",
-          { opacity: 0, y: 22, duration: 1, ease: EASE, stagger: 0.14 },
-          "+=0.55",
-        )
-        .from(
-          "[data-hero-scroll]",
-          { opacity: 0, duration: 0.9, ease: "none" },
-          "-=0.4",
-        );
 
       // Parallax: the photo lags the scroll while the copy lifts and fades out.
       const mm = gsap.matchMedia();
@@ -83,7 +48,7 @@ const Hero = () => {
 
   return (
     <>
-      {playsIntro && <CurtainIntro />}
+      <CurtainIntro />
 
       <section
         ref={root}
@@ -94,13 +59,15 @@ const Hero = () => {
         <div className="absolute inset-0 -top-[10%] h-[120%]">
           {/* <picture> is an inline box by default; it has to fill the
               sized wrapper or the img's h-full resolves against nothing. */}
-          <picture className="block h-full w-full">
+          <picture className="hero-photo block h-full w-full">
             {/* Phones get the portrait crop. The breakpoint matches the
                 layout's own: above it the wide shot has room to read. */}
             <source
               media="(max-width: 767px)"
               srcSet={heroMobile}
               sizes="100vw"
+              width={1024}
+              height={1536}
             />
             <img
               ref={image}
@@ -109,8 +76,10 @@ const Hero = () => {
               sizes="100vw"
               // This React version passes through only the lowercase spelling.
               {...{ fetchpriority: "high" }}
-              width={1672}
-              height={941}
+              loading="eager"
+              decoding="async"
+              width={1844}
+              height={853}
               alt="Fachada iluminada à noite com cortinas do piso ao teto"
               className="h-full w-full object-cover"
             />
@@ -141,12 +110,7 @@ const Hero = () => {
               45 anos de tradição
             </p>
 
-            <SplitReveal
-              as="h1"
-              immediate
-              delay={OPEN_AT + 0.45}
-              className="display mt-6 font-light text-ivory"
-            >
+            <h1 className="display mt-6 font-light text-ivory">
               {/* An explicit break keeps the gold phrase whole on every width;
                   the nowrap stops it splitting if a narrow screen disagrees. */}
               O toque final
@@ -154,7 +118,7 @@ const Hero = () => {
               <span className="gold-text gold-text-sheen whitespace-nowrap italic">
                 da sua casa.
               </span>
-            </SplitReveal>
+            </h1>
 
             <p
               data-hero-fade

@@ -46,11 +46,31 @@ const xml = (s) =>
 const sitemapEntries = [];
 const missing = new Set();
 
+/**
+ * The LCP photo's own <source>/<img> candidates, preloaded so the browser
+ * starts on it while still parsing. Lifted from the rendered markup so the two
+ * can never disagree about which file a viewport gets.
+ */
+const heroPreload = (body) => {
+  const picture = body.match(/<picture[\s\S]*?<\/picture>/)?.[0];
+  const source = picture?.match(/<source\b[^>]*>/)?.[0];
+  const img = picture?.match(/<img\b[^>]*>/)?.[0];
+  const attr = (tag, name) => tag?.match(new RegExp(`\\s${name}="([^"]+)"`, "i"))?.[1];
+  const media = attr(source, "media");
+  const narrow = Number(media?.match(/max-width:\s*(\d+)px/)?.[1]);
+  if (!attr(source, "srcset") || !attr(img, "srcset") || !narrow) {
+    throw new Error("could not find the hero <picture> to preload");
+  }
+  const link = (mediaQuery, tag) =>
+    `<link rel="preload" as="image" fetchpriority="high" media="${mediaQuery}" imagesrcset="${attr(tag, "srcset")}" imagesizes="${attr(tag, "sizes")}" />`;
+  return link(media, source) + link(`(min-width: ${narrow + 1}px)`, img);
+};
+
 for (const { route, file, priority } of PAGES) {
   const body = render(route.path);
   const html = template
-    .replace(SEO_BLOCK, headTags(route))
-    .replace("<!--app-html-->", `<div class="prerender">${body}</div>`);
+    .replace(SEO_BLOCK, headTags(route) + (route === ROUTES.home ? heroPreload(body) : ""))
+    .replace("<!--app-html-->", body);
   await writeFile(path.join(dist, file), html);
 
   // Every asset the static page points at must exist in the client build —

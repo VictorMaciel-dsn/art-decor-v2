@@ -983,6 +983,52 @@
   }
 }
 
+/* The opening curtain. CSS rather than GSAP so it exists from the first paint:
+   the panels are in the static HTML, and nothing has to load for them to part.
+   The panels stay in place for the first frames via the fill mode. */
+.curtain-panel {
+  animation: curtain-left 1.6s cubic-bezier(0.83, 0, 0.17, 1) 0.25s both;
+}
+
+.curtain-panel:last-child {
+  animation-name: curtain-right;
+}
+
+.no-intro .curtain {
+  display: none;
+}
+
+@keyframes curtain-left {
+  to {
+    transform: translateX(-100%);
+    visibility: hidden;
+  }
+}
+
+@keyframes curtain-right {
+  to {
+    transform: translateX(100%);
+    visibility: hidden;
+  }
+}
+
+/* The hero photo's slow settle. Sits on the <picture> so it cannot collide with
+   the parallax GSAP writes to the <img>. Under the curtain it waits, so the
+   reveal lands on an image already in motion. */
+.hero-photo {
+  animation: hero-settle 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+}
+
+.no-intro .hero-photo {
+  animation-delay: 0s;
+}
+
+@keyframes hero-settle {
+  from {
+    transform: scale(1.03);
+  }
+}
+
 @keyframes gold-drift {
   0% {
     background-position: 0% 50%;
@@ -996,8 +1042,13 @@
   /* Nothing drifts, pulses or waits to be scrolled into view. GSAP bails out
      on its own (see lib/gsap.ts); this covers the purely CSS motion. */
   .gold-text-sheen,
-  .gold-glow {
+  .gold-glow,
+  .hero-photo {
     animation: none !important;
+  }
+
+  .curtain {
+    display: none;
   }
 
   *,

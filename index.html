@@ -51,12 +51,9 @@
     <meta name="apple-mobile-web-app-title" content="Art Decor" />
     <link rel="alternate" type="text/plain" title="Resumo para IAs (llms.txt)" href="/llms.txt" />
 
-    <!-- Each page is shipped pre-rendered (scripts/prerender.mjs) so its
-         text is in the source for crawlers. The live app mounts over it a
-         moment later; until then the static copy is held invisible so the
-         intro and reveal animations still start from a clean frame. -->
-    <style>.prerender{opacity:0}</style>
-    <noscript><style>.prerender{opacity:1}</style></noscript>
+    <!-- Decides before first paint whether the curtain opening shows (first
+         view of a session only). See src/lib/intro.ts. -->
+    <script>(function(d){try{if(matchMedia("(prefers-reduced-motion: reduce)").matches||sessionStorage.getItem("artdecor:intro-seen"))d.classList.add("no-intro");else sessionStorage.setItem("artdecor:intro-seen","1")}catch(e){d.classList.add("no-intro")}})(document.documentElement)</script>
   </head>
 
   <body style="background-color: #0B0B0B">

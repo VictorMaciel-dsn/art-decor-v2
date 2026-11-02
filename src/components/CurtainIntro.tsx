@@ -1,49 +1,30 @@
-import { useRef } from "react";
-import { gsap, useGSAP, EASE_INOUT } from "@/lib/gsap";
+import { useEffect } from "react";
+import { INTRO_MS, NO_INTRO_CLASS } from "@/lib/intro";
 
 /**
- * Two pleated panels covering the viewport that draw apart to reveal the hero,
- * then unmount. Pleats are a repeating linear-gradient rather than an image, so
- * the opening costs nothing to load and is never the thing delaying it.
+ * Two pleated panels covering the viewport that draw apart to reveal the hero.
+ * Pleats are a repeating linear-gradient rather than an image, so the opening
+ * costs nothing to load.
+ *
+ * Runs on CSS alone (see .curtain in index.css), so it is part of the first
+ * paint and never waits for JavaScript. Whether it shows at all is decided by
+ * the inline script in index.html.
  */
-const CurtainIntro = ({ onDone }: { onDone?: () => void }) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-
-      gsap
-        .timeline({
-          onComplete: () => {
-            gsap.set(el, { display: "none" });
-            onDone?.();
-          },
-        })
-        // A beat of black before it moves — the pause is what makes the
-        // opening feel deliberate instead of like a slow page load.
-        .to(el.querySelectorAll("[data-panel]"), {
-          xPercent: (i) => (i === 0 ? -100 : 100),
-          duration: 1.6,
-          ease: EASE_INOUT,
-          delay: 0.25,
-        });
-    },
-    { scope: ref },
-  );
+const CurtainIntro = () => {
+  useEffect(() => {
+    const id = window.setTimeout(
+      () => document.documentElement.classList.add(NO_INTRO_CLASS),
+      INTRO_MS,
+    );
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
-    <div
-      ref={ref}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[90] flex"
-    >
+    <div aria-hidden="true" className="curtain pointer-events-none fixed inset-0 z-[90] flex">
       {[0, 1].map((i) => (
         <div
           key={i}
-          data-panel
-          className="h-full w-1/2 bg-ink"
+          className="curtain-panel h-full w-1/2 bg-ink"
           style={{
             // Soft vertical banding reads as fabric; the inset shadow on the
             // meeting edge keeps the two halves from looking like one flat wall.
