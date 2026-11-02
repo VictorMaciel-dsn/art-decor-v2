@@ -12,7 +12,7 @@ import motorized from "@/assets/img/persiana_teto.jpg?hq";
 import motorizedUrl from "@/assets/img/persiana_teto.jpg?hq&as=url";
 import motorizedMeta from "@/assets/img/persiana_teto.jpg?meta";
 import motorizedVideo from "@/assets/img/motorizada.mp4";
-import motorizedPoster from "@/assets/img/motorizada_poster.jpg?w=1280&format=webp&quality=88&as=url";
+import motorizedPoster from "@/assets/img/motorizada_poster.jpg?w=728&format=webp&quality=70&as=url";
 
 const Arrow = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} className="h-3.5 w-3.5">
@@ -105,7 +105,7 @@ const Products = () => (
                       src={b.image}
                       fallback={b.imageUrl}
                       meta={b.meta}
-                      sizes="(min-width: 1024px) 58vw, 100vw"
+                      sizes="(min-width: 1024px) 52vw, (min-width: 640px) calc(100vw - 80px), calc(100vw - 48px)"
                       alt={b.alt}
                       className="h-auto w-full"
                     />

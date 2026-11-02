@@ -57,7 +57,7 @@ const About = () => (
                   src={primary}
                   fallback={primaryUrl}
                   meta={primaryMeta}
-                  sizes="(min-width: 1024px) 56vw, 100vw"
+                  sizes="(min-width: 1024px) 52vw, (min-width: 640px) calc(100vw - 80px), calc(100vw - 48px)"
                   alt="Persianas painel sob medida em sala de estar"
                   className="h-auto w-full"
                 />
@@ -70,7 +70,7 @@ const About = () => (
                   src={secondary}
                   fallback={secondaryUrl}
                   meta={secondaryMeta}
-                  sizes="(min-width: 1024px) 33vw, 58vw"
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 52vw, calc(75vw - 36px)"
                   alt="Sala de estar com cortinas sob medida em janela panorâmica"
                   className="h-auto w-full"
                 />

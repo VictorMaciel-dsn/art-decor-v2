@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react-swc";
 import { imagetools } from "vite-imagetools";
 import path from "path";
 
+const PHOTO_QUALITY = "75";
+
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   server: {
@@ -34,7 +36,7 @@ export default defineConfig(() => ({
         if (url.searchParams.get("as") === "url") {
           return new URLSearchParams({
             format: "webp",
-            quality: "90",
+            quality: PHOTO_QUALITY,
             w: "1280",
             withoutEnlargement: "true",
           });
@@ -42,8 +44,8 @@ export default defineConfig(() => ({
 
         return new URLSearchParams({
           format: "webp",
-          quality: "90",
-          w: "540;760;1080;1280;1520;1920;2560",
+          quality: PHOTO_QUALITY,
+          w: "400;540;760;1080;1280;1520;1920",
           withoutEnlargement: "true",
           as: "srcset",
         });
