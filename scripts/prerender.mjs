@@ -16,6 +16,7 @@
 import { readFile, writeFile, rm, access } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import Beasties from "beasties";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -66,11 +67,27 @@ const heroPreload = (body) => {
   return link(media, source) + link(`(min-width: ${narrow + 1}px)`, img);
 };
 
+// Inlines the CSS each page's markup uses, so the stylesheet stops blocking
+// first paint. preload:"body" moves the full sheet to the end of the body, which
+// needs no inline onload handler and so stays compatible with a strict CSP.
+const beasties = new Beasties({
+  path: dist,
+  publicPath: "/",
+  preload: "body",
+  inlineFonts: true,
+  preloadFonts: false,
+  logLevel: "warn",
+  // Set on <html> by the inline script, so absent from the static markup.
+  allowRules: [/no-intro/],
+});
+
 for (const { route, file, priority } of PAGES) {
   const body = render(route.path);
-  const html = template
-    .replace(SEO_BLOCK, headTags(route) + (route === ROUTES.home ? heroPreload(body) : ""))
-    .replace("<!--app-html-->", body);
+  const html = await beasties.process(
+    template
+      .replace(SEO_BLOCK, headTags(route) + (route === ROUTES.home ? heroPreload(body) : ""))
+      .replace("<!--app-html-->", body),
+  );
   await writeFile(path.join(dist, file), html);
 
   // Every asset the static page points at must exist in the client build —
