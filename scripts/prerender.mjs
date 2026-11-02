@@ -15,6 +15,7 @@
  */
 import { readFile, writeFile, rm, access } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import Beasties from "beasties";
 
@@ -118,6 +119,17 @@ for (const { route, file, priority } of PAGES) {
 
 if (missing.size) {
   throw new Error(`prerendered HTML references missing assets:\n${[...missing].join("\n")}`);
+}
+
+// The CSP allows inline scripts by hash, so editing one without updating
+// vercel.json would block it in production. Fail the build instead.
+const vercel = await readFile(path.join(root, "vercel.json"), "utf8");
+const page = await readFile(path.join(dist, "index.html"), "utf8");
+for (const [, code] of page.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+  const hash = createHash("sha256").update(code).digest("base64");
+  if (!vercel.includes(`'sha256-${hash}'`)) {
+    throw new Error(`inline script changed: put 'sha256-${hash}' in the CSP in vercel.json`);
+  }
 }
 
 const lastmod = new Date().toISOString().slice(0, 10);
