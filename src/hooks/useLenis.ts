@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import Lenis from "lenis";
-import { gsap, ScrollTrigger, reduceMotion } from "@/lib/gsap";
+import type Lenis from "lenis";
+import { reduceMotion } from "@/lib/motion";
+import { loadGsap } from "@/lib/loadGsap";
 
 /**
  * The single Lenis instance. Held at module scope so anchors anywhere in the
@@ -26,6 +27,9 @@ export const scrollToAnchor = (hash: string) => {
   const offset = -((header?.offsetHeight ?? 0) + 8);
 
   if (lenis) {
+    // scrollTo clamps to the page height Lenis last measured, which is stale if
+    // the target's section has only just mounted.
+    lenis.resize();
     lenis.scrollTo(target as HTMLElement, { offset, duration: 1.4 });
   } else {
     const top = target.getBoundingClientRect().top + window.scrollY + offset;
@@ -38,39 +42,51 @@ export const scrollToAnchor = (hash: string) => {
  * and every ScrollTrigger advance on the same frame. Running two loops is what
  * makes scrubbed animation jitter.
  *
- * Mounted once, by Index.
+ * Loaded after first paint; until then the page scrolls natively.
  */
 export const useLenis = () => {
   useEffect(() => {
     // Reduced motion gets the browser's own instant scrolling.
     if (reduceMotion) return;
 
-    const instance = new Lenis({
-      duration: 1.1,
-      // Slightly eased-out ramp; the default is a touch floaty for this much black.
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      // Touch devices already scroll well natively, and hijacking it on a phone
-      // is the fastest way to make a site feel broken.
-      syncTouch: false,
-      autoRaf: false,
-      anchors: false,
+    let cancelled = false;
+    let stop: (() => void) | undefined;
+
+    Promise.all([loadGsap(), import("lenis")]).then(([{ gsap, ScrollTrigger }, { default: Lenis }]) => {
+      if (cancelled) return;
+
+      const instance = new Lenis({
+        duration: 1.1,
+        // Slightly eased-out ramp; the default is a touch floaty for this much black.
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        // Touch devices already scroll well natively, and hijacking it on a phone
+        // is the fastest way to make a site feel broken.
+        syncTouch: false,
+        autoRaf: false,
+        anchors: false,
+      });
+
+      lenis = instance;
+
+      instance.on("scroll", ScrollTrigger.update);
+
+      const tick = (time: number) => instance.raf(time * 1000);
+      gsap.ticker.add(tick);
+      // GSAP smooths delta times by default; Lenis wants the raw clock.
+      gsap.ticker.lagSmoothing(0);
+
+      stop = () => {
+        gsap.ticker.remove(tick);
+        gsap.ticker.lagSmoothing(500, 33);
+        instance.destroy();
+        lenis = null;
+      };
     });
 
-    lenis = instance;
-
-    instance.on("scroll", ScrollTrigger.update);
-
-    const tick = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(tick);
-    // GSAP smooths delta times by default; Lenis wants the raw clock.
-    gsap.ticker.lagSmoothing(0);
-
     return () => {
-      gsap.ticker.remove(tick);
-      gsap.ticker.lagSmoothing(500, 33);
-      instance.destroy();
-      lenis = null;
+      cancelled = true;
+      stop?.();
     };
   }, []);
 };

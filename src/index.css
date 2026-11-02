@@ -983,6 +983,27 @@
   }
 }
 
+/* backwards, not both: a held final frame would override the hover transform. */
+.whatsapp-fab {
+  animation: fab-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.4s backwards;
+  transition: transform 0.2s ease-out;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.06);
+}
+
+.whatsapp-fab:active {
+  transform: scale(0.96);
+}
+
+@keyframes fab-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
 /* The opening curtain. CSS rather than GSAP so it exists from the first paint:
    the panels are in the static HTML, and nothing has to load for them to part.
    The panels stay in place for the first frames via the fill mode. */
@@ -1043,7 +1064,8 @@
      on its own (see lib/gsap.ts); this covers the purely CSS motion. */
   .gold-text-sheen,
   .gold-glow,
-  .hero-photo {
+  .hero-photo,
+  .whatsapp-fab {
     animation: none !important;
   }
 

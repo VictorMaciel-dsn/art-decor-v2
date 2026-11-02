@@ -1,19 +1,19 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Products from "@/components/Products";
-import Projects from "@/components/Projects";
-import Benefits from "@/components/Benefits";
-import Process from "@/components/Process";
-import Testimonials from "@/components/Testimonials";
-import CTA from "@/components/CTA";
-import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { useLenis, scrollToAnchor } from "@/hooks/useLenis";
 import { useSeo } from "@/hooks/useSeo";
+import { afterLoad } from "@/lib/loadGsap";
 import { ROUTES } from "@/lib/seo";
+
+const belowFold = () => afterLoad().then(() => import("@/components/HomeBelowFold"));
+const Sections = lazy(() => belowFold().then((m) => ({ default: m.Sections })));
+const Footer = lazy(() => belowFold().then((m) => ({ default: m.Footer })));
+
+/** About 2 seconds of frames, which comfortably covers fetching the chunk. */
+const ANCHOR_RETRIES = 120;
 
 const Index = () => {
   useLenis();
@@ -21,12 +21,17 @@ const Index = () => {
   const { state } = useLocation();
   const anchor = (state as { anchor?: string } | null)?.anchor;
 
-  // Coming back from the gallery via a nav link: the section only exists
-  // once this page has mounted, so the jump is made here rather than in the
-  // header. A frame of delay lets Lenis take over the scroll first.
+  // Coming back from the gallery via a nav link: the section only exists once
+  // its lazy chunk has mounted, so the jump waits for the target to appear.
   useEffect(() => {
     if (!anchor) return;
-    const id = requestAnimationFrame(() => scrollToAnchor(anchor));
+    let tries = 0;
+    let id = 0;
+    const attempt = () => {
+      if (document.querySelector(anchor)) scrollToAnchor(anchor);
+      else if (tries++ < ANCHOR_RETRIES) id = requestAnimationFrame(attempt);
+    };
+    id = requestAnimationFrame(attempt);
     return () => cancelAnimationFrame(id);
   }, [anchor]);
 
@@ -35,15 +40,13 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <About />
-        <Products />
-        <Projects />
-        <Benefits />
-        <Process />
-        <Testimonials />
-        <CTA />
+        <Suspense fallback={null}>
+          <Sections />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       <WhatsAppButton />
       {/* Over everything, so the grain sits on the photos too. */}
       <div className="grain" aria-hidden="true" />

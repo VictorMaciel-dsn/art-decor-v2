@@ -1,7 +1,9 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Projetos from "./pages/Projetos";
-import NotFound from "./pages/NotFound";
+
+const Projetos = lazy(() => import("./pages/Projetos"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 /**
  * The route table on its own, so the build-time prerender
@@ -10,10 +12,10 @@ import NotFound from "./pages/NotFound";
 export const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Index />} />
-    <Route path="/projetos" element={<Projetos />} />
+    <Route path="/projetos" element={<Suspense fallback={null}><Projetos /></Suspense>} />
     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE — and to
         ROUTES in src/lib/seo.ts and scripts/prerender.mjs */}
-    <Route path="*" element={<NotFound />} />
+    <Route path="*" element={<Suspense fallback={null}><NotFound /></Suspense>} />
   </Routes>
 );
 

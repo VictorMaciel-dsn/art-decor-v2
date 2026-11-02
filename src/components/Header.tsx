@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Instagram } from "lucide-react";
-import { gsap, useGSAP, reduceMotion } from "@/lib/gsap";
+import { reduceMotion } from "@/lib/motion";
+import { importGsap } from "@/lib/loadGsap";
 import Logo from "./Logo";
 import Button from "./Button";
 import { getLenis, scrollToAnchor } from "@/hooks/useLenis";
@@ -105,11 +106,21 @@ const Header = () => {
     };
   }, [open]);
 
-  useGSAP(
-    () => {
-      const el = panel.current;
-      if (!el) return;
-      el.dataset.open = String(open);
+  const panelTouched = useRef(false);
+
+  useEffect(() => {
+    const el = panel.current;
+    if (!el) return;
+    el.dataset.open = String(open);
+
+    // Starts closed in the markup, so there is nothing to do, or to download,
+    // until the visitor first opens it.
+    if (!open && !panelTouched.current) return;
+    panelTouched.current = true;
+
+    let cancelled = false;
+    importGsap().then(({ gsap }) => {
+      if (cancelled) return;
 
       if (reduceMotion) {
         gsap.set(el, { autoAlpha: open ? 1 : 0 });
@@ -130,9 +141,11 @@ const Header = () => {
       } else {
         gsap.to(el, { autoAlpha: 0, duration: 0.3, ease: "power2.in" });
       }
-    },
-    { dependencies: [open], scope: panel },
-  );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
 
   // Every nav target is a section of the home page. From another route
   // (the gallery) there is nothing to scroll to, so go home first and let

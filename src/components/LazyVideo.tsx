@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { reduceMotion } from "@/lib/gsap";
+import { reduceMotion } from "@/lib/motion";
 
 type Props = {
   src: string;

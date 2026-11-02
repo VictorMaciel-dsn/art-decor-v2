@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { gsap, useGSAP, reduceMotion, MOBILE_BREAKPOINT } from "@/lib/gsap";
+import { reduceMotion, MOBILE_BREAKPOINT } from "@/lib/motion";
+import { useDeferredGsap } from "@/lib/loadGsap";
 import Button from "./Button";
 import CurtainIntro from "./CurtainIntro";
 import { scrollToAnchor } from "@/hooks/useLenis";
@@ -20,31 +21,28 @@ const Hero = () => {
   const root = useRef<HTMLElement>(null);
   const image = useRef<HTMLImageElement>(null);
 
-  useGSAP(
-    () => {
-      if (reduceMotion) return;
+  useDeferredGsap(({ gsap }) => {
+    if (reduceMotion) return;
 
-      // Parallax: the photo lags the scroll while the copy lifts and fades out.
-      const mm = gsap.matchMedia();
-      mm.add(`(min-width: ${MOBILE_BREAKPOINT}px)`, () => {
-        const scrub = {
-          trigger: root.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        };
-        gsap.to(image.current, { yPercent: 18, ease: "none", scrollTrigger: scrub });
-        gsap.to("[data-hero-copy]", {
-          yPercent: -14,
-          opacity: 0,
-          ease: "none",
-          scrollTrigger: { ...scrub, end: "bottom 30%" },
-        });
+    // Parallax: the photo lags the scroll while the copy lifts and fades out.
+    const mm = gsap.matchMedia();
+    mm.add(`(min-width: ${MOBILE_BREAKPOINT}px)`, () => {
+      const scrub = {
+        trigger: root.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      };
+      gsap.to(image.current, { yPercent: 18, ease: "none", scrollTrigger: scrub });
+      gsap.to("[data-hero-copy]", {
+        yPercent: -14,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: { ...scrub, end: "bottom 30%" },
       });
-      return () => mm.revert();
-    },
-    { scope: root },
-  );
+    });
+    return () => mm.revert();
+  }, root);
 
   return (
     <>

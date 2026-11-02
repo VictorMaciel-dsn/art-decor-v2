@@ -82,7 +82,7 @@ const beasties = new Beasties({
 });
 
 for (const { route, file, priority } of PAGES) {
-  const body = render(route.path);
+  const body = await render(route.path);
   const html = await beasties.process(
     template
       .replace(SEO_BLOCK, headTags(route) + (route === ROUTES.home ? heroPreload(body) : ""))
