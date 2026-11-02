@@ -6,10 +6,11 @@
     <meta name="theme-color" content="#0B0B0B" />
     <meta name="format-detection" content="telephone=no" />
 
-    <!-- The two faces of the H1, fetched up front so the headline swaps early.
+    <!-- The two faces of the H1, fetched up front so the headline swaps early,
+         at low priority so they do not take bandwidth from the hero photo.
          Same files src/index.css declares. -->
-    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" fetchpriority="low" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/cormorant-garamond-italic-latin.woff2" as="font" type="font/woff2" fetchpriority="low" crossorigin />
 
     <!-- seo:start — per-route tags. scripts/prerender.mjs rewrites this
          block for every page at build time (values from src/lib/seo.ts);

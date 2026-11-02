@@ -4,6 +4,16 @@
    build's hashed, immutable caching. The H1's two latin files are preloaded
    from index.html; latin-ext only downloads if a page ever uses a character
    from it. */
+/* Arial reshaped to Inter's metrics. Inter is not preloaded, so text first paints
+   in the fallback, and this keeps lines from reflowing when Inter swaps in. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 107.06%;
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+}
 @font-face {
   font-family: 'Cormorant Garamond';
   font-style: normal;
@@ -168,7 +178,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 300;
   }
 

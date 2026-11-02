@@ -73,7 +73,9 @@ const LazyVideo = ({
       // Under reduced motion it is attached up front but never preloaded,
       // so the controls work without fetching anything until pressed.
       src={near || reduced ? src : undefined}
-      poster={poster}
+      // Browsers fetch a poster up front even with preload="none", so it waits
+      // too, or it competes with the hero photo for the first load.
+      poster={near || reduced ? poster : undefined}
       width={width}
       height={height}
       autoPlay={!reduced}

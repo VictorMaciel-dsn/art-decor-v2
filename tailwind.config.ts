@@ -25,7 +25,7 @@ export default {
       },
       fontFamily: {
         serif: ["'Cormorant Garamond'", "Georgia", "serif"],
-        sans: ["'Inter'", "system-ui", "sans-serif"],
+        sans: ["'Inter'", "'Inter Fallback'", "system-ui", "sans-serif"],
       },
       colors: {
         ivory: "hsl(var(--ivory))",
