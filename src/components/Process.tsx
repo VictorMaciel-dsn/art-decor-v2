@@ -9,8 +9,12 @@ const steps = [
   { n: "04", title: "Instalação", text: "Nossa equipe instala e revisa cada detalhe até o resultado ficar impecável." },
 ];
 
-/** Dim state every step starts in, and the lit state it scrubs to. */
-const DIM = 0.25;
+/**
+ * The state every step rests in before it lights up. This is text people read,
+ * so the floor is contrast: at this opacity the body copy (ivory/70) still
+ * clears 4.5:1 on ink.
+ */
+const DIM = 0.75;
 
 /** --gold is 37 48% 57%. Written out because GSAP tweens computed colour. */
 const GOLD = "hsl(37, 48%, 57%)";
@@ -217,7 +221,7 @@ const Process = () => {
               </div>
               <p
                 data-body={s.n}
-                className="mt-3 text-sm font-light leading-relaxed text-ivory/50"
+                className="mt-3 text-sm font-light leading-relaxed text-ivory/70"
                 style={dim}
               >
                 {s.text}

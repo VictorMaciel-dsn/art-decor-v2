@@ -82,7 +82,10 @@ const LazyVideo = ({
       playsInline
       controls={reduced}
       preload="none"
-      aria-label={label}
+      // Decorative while it loops silently. Under reduced motion it has
+      // controls, which makes it something to operate, so it needs a name.
+      aria-hidden={reduced ? undefined : true}
+      aria-label={reduced ? label : undefined}
       className={`photo-warm h-auto w-full ${className}`}
     />
   );
