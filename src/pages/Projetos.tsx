@@ -169,7 +169,15 @@ const Projetos = () => {
                       delay={p.width === "wide" ? 0 : (i % 2) * 0.1}
                       y={32}
                     >
-                      <figure className="group">
+                      {/* The video stops at its native 1024px and, with the
+                          floating header and caption, fits a laptop screen. */}
+                      <figure
+                        className={`group ${
+                          p.video
+                            ? "mx-auto lg:max-w-[min(1024px,calc((100vh-13rem)*16/9))]"
+                            : ""
+                        }`}
+                      >
                         <div className="zoom-frame">
                           {p.video ? (
                             <LazyVideo
