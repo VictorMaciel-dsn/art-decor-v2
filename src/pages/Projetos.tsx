@@ -82,7 +82,10 @@ const Projetos = () => {
               className="display mt-7 max-w-4xl font-light text-ivory"
             >
               Projetos{" "}
-              <span className="gold-text gold-text-sheen italic">
+              <span
+                data-sheen="entregues."
+                className="gold-text gold-text-sheen italic"
+              >
                 entregues.
               </span>
             </SplitReveal>
