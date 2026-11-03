@@ -308,6 +308,11 @@
   .gold-text-sheen {
     position: relative;
     display: inline-block;
+    /* As an inline-block its background stops at the line box, which on the
+       display headings is shorter than the glyphs, so the gradient needs more
+       room below than plain .gold-text to reach the bottom of a descender. */
+    padding-bottom: 0.2em;
+    margin-bottom: -0.2em;
   }
 
   .gold-text-sheen::after {

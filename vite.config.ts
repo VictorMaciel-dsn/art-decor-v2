@@ -48,7 +48,7 @@ export default defineConfig(() => ({
         return new URLSearchParams({
           format: "webp",
           quality: PHOTO_QUALITY,
-          w: "400;540;760;1080;1280;1520;1920",
+          w: "400;480;640;760;1080;1280;1520;1920",
           withoutEnlargement: "true",
           as: "srcset",
         });
