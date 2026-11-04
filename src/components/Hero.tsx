@@ -125,7 +125,7 @@ const Hero = () => {
               data-hero-fade
               className="mt-8 max-w-xl text-base font-light leading-relaxed text-ivory/70 sm:text-lg"
             >
-              Cortinas e persianas sob medida, com tecidos selecionados,
+              Cortinas e persianas sob medida em Teresópolis, com tecidos selecionados,
               acabamento impecável e soluções inteligentes para transformar
               seus ambientes.
             </p>

@@ -30,6 +30,8 @@ const { render, headTags, ROUTES, SITE_URL, absoluteUrl } = await import(
 /** Route → output file. cleanUrls in vercel.json serves projetos.html at /projetos. */
 const PAGES = [
   { route: ROUTES.home, file: "index.html", priority: "1.0" },
+  { route: ROUTES.cortinas, file: "cortinas-em-teresopolis.html", priority: "0.9" },
+  { route: ROUTES.persianas, file: "persianas-em-teresopolis.html", priority: "0.9" },
   { route: ROUTES.projetos, file: "projetos.html", priority: "0.8" },
   { route: ROUTES.notFound, file: "404.html" },
 ];
