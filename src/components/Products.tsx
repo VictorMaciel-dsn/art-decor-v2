@@ -26,7 +26,8 @@ const blocks = [
     number: "01",
     title: "Cortinas",
     text: "Tecidos selecionados para vestir seus ambientes com leveza, conforto e personalidade.",
-    cta: "Conhecer coleção",
+    cta: "Conhecer as cortinas",
+    to: "/cortinas-em-teresopolis",
     image: curtains,
     imageUrl: curtainsUrl,
     meta: curtainsMeta,
@@ -38,7 +39,8 @@ const blocks = [
     number: "02",
     title: "Persianas",
     text: "Controle preciso da luz com soluções que unem funcionalidade e estética.",
-    cta: "Conhecer coleção",
+    cta: "Conhecer as persianas",
+    to: "/persianas-em-teresopolis",
     image: blinds,
     imageUrl: blindsUrl,
     meta: blindsMeta,
@@ -51,6 +53,7 @@ const blocks = [
     title: "Automação",
     text: "Tecnologia integrada para transformar conforto em experiência.",
     cta: "Conhecer soluções",
+    to: "/projetos#automacao",
     image: motorized,
     imageUrl: motorizedUrl,
     meta: motorizedMeta,
@@ -127,11 +130,8 @@ const Products = () => (
                 <p className="mt-6 text-xs font-light uppercase tracking-[0.14em] text-gold/70">
                   {b.detail}
                 </p>
-                {/* Straight to this collection's own section of the
-                    gallery. The block id doubles as the anchor there, so
-                    the two stay in step by construction. */}
                 <Link
-                  to={`/projetos#${b.id}`}
+                  to={b.to}
                   className="link-line mt-10 font-medium uppercase tracking-[0.14em] text-gold hover:text-gold-light"
                 >
                   {b.cta}

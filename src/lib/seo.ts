@@ -51,15 +51,33 @@ export type RouteSeo = {
   crumb?: string;
   /** schema.org type of the page itself. */
   pageType?: "WebPage" | "CollectionPage";
+  /** The service a landing page sells, as a schema.org Service. */
+  service?: string;
 };
 
-export const ROUTES: Record<"home" | "projetos" | "notFound", RouteSeo> = {
+export const ROUTES: Record<"home" | "cortinas" | "persianas" | "projetos" | "notFound", RouteSeo> = {
   home: {
     path: "/",
-    title: "Art Decor de Teresópolis | Cortinas e Persianas sob Medida",
+    title: "Cortinas e Persianas em Teresópolis sob Medida | Art Decor",
     description:
       "Cortinas, persianas e automação sob medida em Teresópolis e região há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento.",
     pageType: "WebPage",
+  },
+  cortinas: {
+    path: "/cortinas-em-teresopolis",
+    title: "Cortinas em Teresópolis sob Medida | Art Decor",
+    description:
+      "Cortinas sob medida em Teresópolis há 45 anos: prega macho, wave, blackout, voil e linho. Visita técnica, confecção e instalação pela nossa equipe. Peça seu orçamento.",
+    crumb: "Cortinas em Teresópolis",
+    service: "Cortinas sob medida",
+  },
+  persianas: {
+    path: "/persianas-em-teresopolis",
+    title: "Persianas em Teresópolis sob Medida | Art Decor",
+    description:
+      "Persianas sob medida em Teresópolis há 45 anos: rolô, double vision, romana, vertical e painel. Visita técnica, produção e instalação pela nossa equipe. Peça seu orçamento.",
+    crumb: "Persianas em Teresópolis",
+    service: "Persianas sob medida",
   },
   projetos: {
     path: "/projetos",
@@ -113,6 +131,7 @@ const businessNode = {
   hasMap: BUSINESS.mapsUrl,
   areaServed: [
     { "@type": "City", name: "Teresópolis" },
+    { "@type": "City", name: "Rio de Janeiro" },
     { "@type": "AdministrativeArea", name: "Região Serrana do Rio de Janeiro" },
   ],
   contactPoint: [
@@ -233,6 +252,19 @@ export const structuredData = (route: RouteSeo) => {
       };
       page.breadcrumb = { "@id": crumbs["@id"] };
       graph.push(crumbs);
+    }
+
+    if (route.service) {
+      graph.push({
+        "@type": "Service",
+        "@id": `${url}#service`,
+        name: route.service,
+        serviceType: route.service,
+        url,
+        description: route.description,
+        provider: { "@id": BUSINESS_ID },
+        areaServed: businessNode.areaServed,
+      });
     }
     graph.push(page);
   }

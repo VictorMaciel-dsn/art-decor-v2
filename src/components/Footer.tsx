@@ -32,8 +32,8 @@ const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
 const MAPS = "https://maps.google.com/?q=Av.+Lúcio+Meira,+551+-+Várzea,+Teresópolis+-+RJ";
 
 const nav = [
-  { label: "Cortinas", href: "#cortinas" },
-  { label: "Persianas", href: "#persianas" },
+  { label: "Cortinas em Teresópolis", href: "/cortinas-em-teresopolis" },
+  { label: "Persianas em Teresópolis", href: "/persianas-em-teresopolis" },
   { label: "Automação", href: "#automacao" },
   { label: "Projetos", href: "#projetos" },
   { label: "Sobre nós", href: "#sobre" },
@@ -81,7 +81,14 @@ const Footer = () => {
                   anchor instead and let Index make the jump. */}
               {nav.map((n) => (
                 <li key={n.href}>
-                  {onHome ? (
+                  {n.href.startsWith("/") ? (
+                    <Link
+                      to={n.href}
+                      className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"
+                    >
+                      {n.label}
+                    </Link>
+                  ) : onHome ? (
                     <a
                       href={n.href}
                       className="text-sm font-light text-ivory/75 transition-colors duration-300 hover:text-gold"

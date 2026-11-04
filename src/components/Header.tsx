@@ -12,8 +12,8 @@ const INSTAGRAM = "https://www.instagram.com/artdecorteresopolis/";
 
 const links = [
   { label: "Projetos", href: "#projetos" },
-  { label: "Cortinas", href: "#cortinas" },
-  { label: "Persianas", href: "#persianas" },
+  { label: "Cortinas", href: "/cortinas-em-teresopolis" },
+  { label: "Persianas", href: "/persianas-em-teresopolis" },
   { label: "Automação", href: "#automacao" },
   { label: "Sobre nós", href: "#sobre" },
   { label: "Contato", href: "#contato" },
@@ -147,12 +147,16 @@ const Header = () => {
     };
   }, [open]);
 
-  // Every nav target is a section of the home page. From another route
-  // (the gallery) there is nothing to scroll to, so go home first and let
+  // A nav target is a page of its own or a section of the home page. From
+  // another route there is no section to scroll to, so go home first and let
   // Index hand the anchor to Lenis once it has mounted.
   const go = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     setOpen(false);
+    if (href.startsWith("/")) {
+      navigate(href);
+      return;
+    }
     if (pathname !== "/") {
       navigate("/", { state: { anchor: href } });
       return;
