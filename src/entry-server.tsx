@@ -24,7 +24,9 @@ export const render = (url: string) =>
         done();
       },
     });
-    sink.on("finish", () => resolve(html));
+    // React's Node stream flushes its whole buffer when an accented character
+    // does not fit at the end, leaving a stray NUL byte in the markup.
+    sink.on("finish", () => resolve(html.replace(/\0/g, "")));
 
     const { pipe } = renderToPipeableStream(
       <StaticRouter location={url}>

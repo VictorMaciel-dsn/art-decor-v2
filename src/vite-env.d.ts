@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+  /** GA4 "G-…" id, set in Vercel for Production. Unset means no analytics. */
+  readonly VITE_GA_MEASUREMENT_ID?: string;
+}
+
 // vite-imagetools imports. `?hq` yields a srcset string (900w + 1800w WebP);
 // `?hq&as=url` yields a single URL to use as the plain src fallback.
 declare module "*?hq" {

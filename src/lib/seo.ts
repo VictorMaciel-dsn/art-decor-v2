@@ -60,14 +60,14 @@ export const ROUTES: Record<"home" | "cortinas" | "persianas" | "projetos" | "no
     path: "/",
     title: "Cortinas e Persianas em Teresópolis sob Medida | Art Decor",
     description:
-      "Cortinas, persianas e automação sob medida em Teresópolis e região há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento.",
+      "Cortinas, persianas e automação sob medida em Teresópolis há 45 anos. Visita técnica, curadoria de tecidos e instalação profissional. Peça seu orçamento.",
     pageType: "WebPage",
   },
   cortinas: {
     path: "/cortinas-em-teresopolis",
     title: "Cortinas em Teresópolis sob Medida | Art Decor",
     description:
-      "Cortinas sob medida em Teresópolis há 45 anos: prega macho, wave, blackout, voil e linho. Visita técnica, confecção e instalação pela nossa equipe. Peça seu orçamento.",
+      "Cortinas sob medida em Teresópolis há 45 anos: prega macho, wave, blackout, voil e linho. Visita técnica, confecção e instalação. Peça seu orçamento.",
     crumb: "Cortinas em Teresópolis",
     service: "Cortinas sob medida",
   },
@@ -75,7 +75,7 @@ export const ROUTES: Record<"home" | "cortinas" | "persianas" | "projetos" | "no
     path: "/persianas-em-teresopolis",
     title: "Persianas em Teresópolis sob Medida | Art Decor",
     description:
-      "Persianas sob medida em Teresópolis há 45 anos: rolô, double vision, romana, vertical e painel. Visita técnica, produção e instalação pela nossa equipe. Peça seu orçamento.",
+      "Persianas sob medida em Teresópolis há 45 anos: rolô, double vision, romana, vertical e painel. Visita técnica, produção e instalação. Peça seu orçamento.",
     crumb: "Persianas em Teresópolis",
     service: "Persianas sob medida",
   },

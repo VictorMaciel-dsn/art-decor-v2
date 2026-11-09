@@ -1,6 +1,9 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { initAnalytics } from "./lib/analytics";
+
+initAnalytics();
 
 const root = document.getElementById("root")!;
 
